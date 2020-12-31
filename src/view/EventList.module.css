@@ -1,11 +1,16 @@
-.eventLine{
+.eventLine {
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
   border-bottom: 1px solid white;
+  width: 100%;
 }
 
-.eventList{
+.eventLine:first-child {
+  border-bottom: none;
+}
+
+.eventList {
   display: flex;
   flex-direction: column-reverse;
   align-items: stretch;
