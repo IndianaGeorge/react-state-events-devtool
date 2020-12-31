@@ -1,0 +1,16 @@
+.eventLine{
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  border-bottom: 1px solid white;
+}
+
+.eventList{
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: stretch;
+  justify-content: flex-end;
+  padding: 0;
+  margin: 0;
+  list-style-type: none;
+}

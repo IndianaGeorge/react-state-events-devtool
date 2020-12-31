@@ -1,6 +1,10 @@
 import React, { useState, useContext } from 'react';
 import { useStateEvents } from 'react-state-events';
 import { historyContext } from '../context/historyContext';
+import Clock from './components/Clock';
+import PayloadBox from './components/PayloadBox';
+
+import Styles from './EventList.module.css';
 
 const StreamList = (props)=>{
   const Controller = useContext(historyContext);
@@ -12,9 +16,12 @@ const StreamList = (props)=>{
     // tell site about it!
   }
   return (
-    <ol>
+    <ol className={Styles.eventList}>
       {
-        selectedStream? history[selectedStream].map((event,index)=><div>{`${event.time} | ${JSON.stringify(event.payload)}`}</div>) : null
+        selectedStream? history[selectedStream].map((event,index)=><div className={Styles.eventLine}>
+          <Clock lit={true}>{event.time}</Clock>
+          <PayloadBox>{JSON.stringify(event.payload)}</PayloadBox>
+        </div>) : null
       }
     </ol>
   )

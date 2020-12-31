@@ -11,3 +11,18 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+@font-face {
+  font-family: 'Digit';
+  src: local('Digit'), url(./assets/fonts/Digit.TTF) format('truetype');
+}
+
+:root {
+  --color-led-h: 39;
+  --color-led-foreground: hsla(var(--color-led-h),100%,50%,1);
+  --color-led-background: hsla(var(--color-led-h),100%,5%,1);
+  --color-led-backlight: hsla(var(--color-led-h),100%,30%,0.4);
+  --color-led-foreground-lit: hsla(var(--color-led-h),80%,80%,1);
+  --color-led-background-lit: hsla(var(--color-led-h),100%,20%,1);
+  --color-led-backlight-lit: hsla(var(--color-led-h),80%,80%,0.5);
+}

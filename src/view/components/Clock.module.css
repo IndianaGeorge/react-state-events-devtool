@@ -1,0 +1,25 @@
+.clockface {
+    font-family: Digit;
+    padding-right: 0.35em;
+    box-sizing: border-box;
+    display: inline-block;
+}
+
+.unlit {
+    background-color: var(--color-led-background);
+    color: var(--color-led-foreground);
+    -webkit-box-shadow: inset 0 -0.1em 0.3em 0.1em var(--color-led-backlight);
+    -moz-box-shadow: inset 0 -0.1em 0.3em 0.1em var(--color-led-backlight);
+    box-shadow: inset 0 -0.1em 0.3em 0.1em var(--color-led-backlight);
+    text-shadow: 0em 0.1em 0.1em rgba(0,0,0,0.5);
+}
+
+.lit {
+    background-color: var(--color-led-backlight-lit);
+    color: var(--color-led-foreground-lit);
+    -webkit-box-shadow: inset 0 0.6em 0.6em 0.5em var(--color-led-background-lit);
+    -moz-box-shadow: inset 0 0.6em 0.6em 0.5em var(--color-led-background-lit);
+    box-shadow: inset 0 0.6em 0.6em 0.5em var(--color-led-background-lit);
+    text-shadow: 0 0.1em 0.1em rgba(0,0,0,0.5),
+                 0 0 0.2em var(--color-led-foreground);
+}
