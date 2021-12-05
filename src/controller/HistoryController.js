@@ -4,13 +4,13 @@ export default class HistoryController {
     constructor() {
         const history = {
             "test stream" : [
-                {time: "01:31:00", payload: {such:"events"} },
-                {time: "01:32:00", payload: {such:"unfold"} },
+                {time: 1638678660000, payload: {such:"events"} },
+                {time: 1638678720000, payload: {such:"unfold"} },
             ],
             "alt stream" : [
-                {time: "01:33:00", payload: {now:"something"} },
-                {time: "01:34:00", payload: {now:"different"} },
-                {time: "01:35:00", payload: {now:"This is just a really long line so we can see how wrapping works when this entry is selected or not selected. It should be fully visible when selected, but collapsed to a single line when not selected. Not sure if this will be a smooth transition ot just a jump cut like the default is for these things.", alt:"and this is to see it formatted"} },
+                {time: 1638678780000, payload: {now:"something"} },
+                {time: 1638678840000, payload: {now:"different"} },
+                {time: 1638678900000, payload: {now:"This is just a really long line so we can see how wrapping works when this entry is selected or not selected. It should be fully visible when selected, but collapsed to a single line when not selected. Not sure if this will be a smooth transition ot just a jump cut like the default is for these things.", alt:"and this is to see it formatted"} },
             ],
         };
         const selected = {

@@ -6,6 +6,11 @@ import PayloadBox from './components/PayloadBox';
 
 import Styles from './EventList.module.css';
 
+const msToTimeString = (ms)=>{
+  const time = new Date(ms);
+  return `${time.getHours()}:${time.getMinutes()}:${time.getSeconds()}`;
+}
+
 const StreamList = (props)=>{
   const Controller = useContext(historyContext);
   const [history] = useStateEvents(Controller.getHistoryEvents());
@@ -21,7 +26,7 @@ const StreamList = (props)=>{
       {
         selectedStream? history[selectedStream].map((event,index)=>(
           <li className={Styles.eventLine} key={index} onClick={()=>select(index)}>
-            <Clock lit={index===selectedState}>{event.time}</Clock>
+            <Clock lit={index===selectedState}>{msToTimeString(event.time)}</Clock>
             <PayloadBox selected={index===selectedState}>{JSON.stringify(event.payload,null,2)}</PayloadBox>
           </li>
         )) : null
