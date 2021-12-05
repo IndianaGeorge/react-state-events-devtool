@@ -8,7 +8,12 @@ import Styles from './EventList.module.css';
 
 const msToTimeString = (ms)=>{
   const time = new Date(ms);
-  return `${time.getHours()}:${time.getMinutes()}:${time.getSeconds()}`;
+  return `${pad(time.getHours(),2)}:${pad(time.getMinutes(),2)}:${pad(time.getSeconds(),2)}`;
+}
+
+const pad = (number,digits)=>{
+  const text = `${number}`;
+  return text.padStart(digits, '0');
 }
 
 const StreamList = (props)=>{
