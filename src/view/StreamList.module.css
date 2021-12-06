@@ -1,0 +1,80 @@
+.container {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+
+    background: #1D2329;
+    background-image: linear-gradient(left, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.1) 50%, rgba(0,0,0,0) 50%, rgba(0,0,0,0) 100%);
+    background-position: 40% 50%;
+    background-size: 2px 2px;
+    user-select: none;
+}
+
+.item {
+    background-color: #888;
+    border: 1px solid #1D2329;
+    padding: 0.25rem;
+    cursor: pointer;
+    flex-grow: 1;
+
+    background-image:
+        -webkit-repeating-linear-gradient(left,
+            hsla(0,0%,100%,0) 0%,
+            hsla(0,0%,100%,0)   6%,
+            hsla(0,0%,100%, .1) 7.5%
+        ),
+        -webkit-repeating-linear-gradient(left,
+            hsla(0,0%,  0%,0) 0%,
+            hsla(0,0%,  0%,0)   4%,
+            hsla(0,0%,  0%,.03) 4.5%
+        ),
+        -webkit-repeating-linear-gradient(left,
+            hsla(0,0%,100%,0) 0%,
+            hsla(0,0%,100%,0) 1.2%,
+            hsla(0,0%,100%,.15) 2.2%
+        ),
+        linear-gradient(180deg,
+            hsl(0,0%,78%)  0%, 
+            hsl(0,0%,90%) 47%, 
+            hsl(0,0%,78%) 53%,
+            hsl(0,0%,70%)100%
+        );
+
+}
+  
+.button {
+    padding: 0.6rem 0.5rem;
+    text-align: center;
+    font-weight: bold;
+    border-radius: 1rem;
+    outline: none;
+    color: hsla(0,0%,20%,1);
+
+    text-shadow:
+        hsla(0,0%,40%,.5) 0 1px 0,
+        hsla(0,0%,100%,.6) 0 -2px 1px;
+
+    box-shadow:
+        inset hsla(0,0%,15%, .8) 0 1px 2px 2px, /* soft SD */
+        inset hsla(0,0%,100%,.7) 0  -2px 1px 3px, /* bottom HL */
+        inset rgba(53, 39, 39, 0.25) 0 1px 0px 3px, /* top SD */
+        
+        hsla(0,0%, 0%,.15) 0 5px 6px 4px, /* outer SD */
+        hsla(0,0%,100%,.5) 0 -5px 6px 4px; /* outer HL */ 
+
+}
+
+.selected {
+    color: hsl(210, 100%, 40%);
+    text-shadow:
+        hsla(210,100%,20%,.3) 0 -1px 0,
+        hsl(210,100%,85%) 0 2px 1px,
+        hsla(200,100%,80%,1) 0 0 5px,
+        hsla(210,100%,50%,.6) 0 0 20px;
+}
+
+.notSelected {
+}

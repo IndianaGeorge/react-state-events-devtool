@@ -2,6 +2,8 @@ import React, { useContext } from 'react';
 import { useStateEvents } from 'react-state-events';
 import { historyContext } from '../context/historyContext';
 
+import Styles from './StreamList.module.css';
+
 const StreamList = (props)=>{
   const Controller = useContext(historyContext);
   const [history] = useStateEvents(Controller.getHistoryEvents());
@@ -10,14 +12,19 @@ const StreamList = (props)=>{
   const select = (streamName)=>{
     Controller.selectStream(streamName);
   }
+  console.log(Styles);
   return (
-    <ol>
+    <ol className={Styles.container}>
       {
-        streamNames.map((streamName,index)=><div
-          onClick={()=>select(streamName)}
-          className={streamName===selectedStream?'selected':'not-selected'}
-          key={index}
-        >{streamName}</div>)
+        streamNames.map((streamName,index)=><div className={`${Styles.item}`}>
+          <div
+            onClick={()=>select(streamName)}
+            className={`${Styles.button} ${streamName===selectedStream?Styles.selected:Styles.notSelected}`}
+            key={index}
+          >
+            {streamName}
+          </div>
+        </div>)
       }
     </ol>
   )
