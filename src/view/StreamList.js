@@ -16,15 +16,19 @@ const StreamList = (props)=>{
   return (
     <ol className={Styles.container}>
       {
-        streamNames.map((streamName,index)=><div className={`${Styles.item}`}>
+        streamNames.map((streamName,index)=>(
           <div
-            onClick={()=>select(streamName)}
-            className={`${Styles.button} ${streamName===selectedStream?Styles.selected:Styles.notSelected}`}
+            className={`${Styles.item} ${streamName===selectedStream?Styles.selected:Styles.notSelected}`}
             key={index}
+            onClick={()=>select(streamName)}
           >
-            {streamName}
+            <div
+              className={`${Styles.button}`}
+            >
+              {streamName}
+            </div>
           </div>
-        </div>)
+        ))
       }
     </ol>
   )

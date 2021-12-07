@@ -15,42 +15,24 @@
 
 .item {
     background-color: #888;
-    border: 1px solid #1D2329;
-    padding: 0.25rem;
+    padding: 0.4rem;
     cursor: pointer;
     flex-grow: 1;
 
-    background-image:
-        -webkit-repeating-linear-gradient(left,
-            hsla(0,0%,100%,0) 0%,
-            hsla(0,0%,100%,0)   6%,
-            hsla(0,0%,100%, .1) 7.5%
-        ),
-        -webkit-repeating-linear-gradient(left,
-            hsla(0,0%,  0%,0) 0%,
-            hsla(0,0%,  0%,0)   4%,
-            hsla(0,0%,  0%,.03) 4.5%
-        ),
-        -webkit-repeating-linear-gradient(left,
-            hsla(0,0%,100%,0) 0%,
-            hsla(0,0%,100%,0) 1.2%,
-            hsla(0,0%,100%,.15) 2.2%
-        ),
-        linear-gradient(180deg,
-            hsl(0,0%,78%)  0%, 
-            hsl(0,0%,90%) 47%, 
-            hsl(0,0%,78%) 53%,
-            hsl(0,0%,70%)100%
-        );
-
+    box-shadow:
+        inset hsla(0,0%,0%, .5) 0 0 0.1em 0.05em, /* Border */
+        inset hsla(0,0%,0%, .5) -0.3em -0.3em 1em 0.3em, /* Bottom Right shadow */
+        inset hsla(0,0%,100%, 1) 0.5em 0.5em 1em 0.3em; /* Top Left highlight */
 }
-  
+
 .button {
-    padding: 0.6rem 0.5rem;
+    padding: 0.3rem 0.5rem;
     text-align: center;
     font-weight: bold;
     border-radius: 1rem;
+
     outline: none;
+    background-color: hsl(0,0%,70%);
     color: hsla(0,0%,20%,1);
 
     text-shadow:
@@ -58,22 +40,30 @@
         hsla(0,0%,100%,.6) 0 -2px 1px;
 
     box-shadow:
-        inset hsla(0,0%,15%, .8) 0 1px 2px 2px, /* soft SD */
-        inset hsla(0,0%,100%,.7) 0  -2px 1px 3px, /* bottom HL */
-        inset rgba(53, 39, 39, 0.25) 0 1px 0px 3px, /* top SD */
-        
-        hsla(0,0%, 0%,.15) 0 5px 6px 4px, /* outer SD */
-        hsla(0,0%,100%,.5) 0 -5px 6px 4px; /* outer HL */ 
+        inset hsla(0,0%,60%, 1) 0 0 0.1em 0.1em, /* Border */
+        inset hsla(0,0%,100%, 0.4) 0 -1em 0.5em 0.2em, /* Bottom highlight */
+        inset hsla(0,0%,0%, 0.2) 0 1em 0.5em 0.2em, /* Top shadow */
+        hsla(0,0%,30%, .2) 0 0.3em 0.3em 0.3em, /* Outer bottom shade */
+        hsla(0,0%,70%, 0.2) 0 -0.3em 0.3em 0.3em; /* Outer bottom shade */
+
 
 }
 
-.selected {
-    color: hsl(210, 100%, 40%);
+.selected .button {
+    color: hsl(210,100%,90%);
     text-shadow:
-        hsla(210,100%,20%,.3) 0 -1px 0,
-        hsl(210,100%,85%) 0 2px 1px,
-        hsla(200,100%,80%,1) 0 0 5px,
-        hsla(210,100%,50%,.6) 0 0 20px;
+    hsla(0,0%,40%,.2) 0 1px 0,
+    hsla(0,0%,100%,.3) 0 -2px 1px,
+    hsla(210,100%,40%,1) 0 0 0.5em,
+    hsla(210,100%,40%,1) 0 0 0.8em;
+}
+
+.selected {
+    box-shadow:
+    inset hsla(200,100%,80%,.6) 0 0 0.2em 0.05em, /* Lit border */
+    inset hsla(210,100%,40%,.7) 0 0 0.5em 0.2em, /* Border bloom */
+    inset hsla(0,0%,0%, .5) -0.3em -0.3em 1em 0.3em, /* Bottom Right shadow */
+    inset hsla(0,0%,100%, 1) 0.5em 0.5em 1em 0.3em; /* Top Left highlight */
 }
 
 .notSelected {
