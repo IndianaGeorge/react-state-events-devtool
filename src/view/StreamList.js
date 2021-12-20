@@ -12,7 +12,7 @@ const StreamList = (props)=>{
   const select = (streamName)=>{
     Controller.selectStream(streamName);
   }
-  console.log(Styles);
+
   return (
     <ol className={Styles.container}>
       {

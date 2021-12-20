@@ -1,6 +1,7 @@
 body {
   margin: 0;
-  background-color: darkgray;
+  height: 100vh;
+  background-color: slategray;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
@@ -28,4 +29,8 @@ code {
   --color-led-foreground-lit: hsla(var(--color-led-h),80%,80%,1);
   --color-led-background-lit: hsla(var(--color-led-h),100%,20%,1);
   --color-led-backlight-lit: hsla(var(--color-led-h),80%,80%,0.5);
+}
+
+#root {
+  height: 100%;
 }

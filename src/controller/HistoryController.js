@@ -67,9 +67,12 @@ export default class HistoryController {
         this.selectedStateEvents.publish(selected);
     }
 
-    addEvent() {
-        const history = { ...this.historyEvents.current }; // hey React, this is new!
-        // add the event??
-        this.historyEvents.publish(history); // profit
+    addEvent(text) {
+        const history = { ...this.historyEvents.getCurrent() }; // hey React, this is new!
+        const newEventPayload = JSON.parse(text);
+        const newEvent = {time: new Date(), payload: newEventPayload };
+        const currentStream = this.selectedStreamEvents.getCurrent();
+        history[currentStream].push(newEvent);
+        this.historyEvents.publish(history);
     }
 }
