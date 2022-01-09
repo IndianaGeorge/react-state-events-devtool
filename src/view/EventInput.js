@@ -10,7 +10,7 @@ function EventInput() {
 
   const onAdd = () => {
     try {
-      Controller.addEvent(value);
+      Controller.sendEvent(JSON.parse(value));
       setValue('');
     }
     catch {
