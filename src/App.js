@@ -13,12 +13,18 @@ import Styles from './App.module.css';
 function App() {
   const Controller = useContext(historyContext);
   const handleContentMessage = (msg, sender, respFn) => {
-    Controller.receiveEvent(msg.debugName, msg.payload);
+    Controller.receiveEvent(msg.type, msg.payload);
     return null;
   }
   
   useEffect(() => {
     chrome.runtime.onMessage.addListener(handleContentMessage);
+
+    // initial request for existing streams
+    Controller.requestStreamList();
+    Controller.requestStreamHistory(0);
+    console.log("Popup app requesting stream list!");
+
     return () => chrome.runtime.onMessage.removeListener(handleContentMessage);
   }, []);
 

@@ -18,7 +18,7 @@ const pad = (number,digits)=>{
 
 const StreamList = (props)=>{
   const Controller = useContext(historyContext);
-  const [history] = useStateEvents(Controller.getHistoryEvents());
+  const [stateEvents] = useStateEvents(Controller.getEventListEvents());
   const [selected] = useStateEvents(Controller.getSelectedStateEvents());
   const [selectedStream] = useStateEvents(Controller.getSelectedStreamEvents());
   const selectedState = selectedStream?selected[selectedStream]:null;
@@ -29,10 +29,10 @@ const StreamList = (props)=>{
   return (
     <ol className={Styles.eventList}>
       {
-        selectedStream? history[selectedStream].map((event,index)=>(
+        selectedStream? stateEvents.map((stateEvent,index)=>(
           <li className={Styles.eventLine} key={index} onClick={()=>select(index)}>
-            <Clock lit={index===selectedState}>{msToTimeString(event.time)}</Clock>
-            <PayloadBox selected={index===selectedState}>{JSON.stringify(event.payload,null,2)}</PayloadBox>
+            <Clock lit={index===selectedState}>{msToTimeString(stateEvent.time)}</Clock>
+            <PayloadBox selected={index===selectedState}>{JSON.stringify(stateEvent.payload,null,2)}</PayloadBox>
           </li>
         )) : null
       }

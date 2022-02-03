@@ -6,11 +6,10 @@ import Styles from './StreamList.module.css';
 
 const StreamList = (props)=>{
   const Controller = useContext(historyContext);
-  const [history] = useStateEvents(Controller.getHistoryEvents());
+  const [streamNames] = useStateEvents(Controller.getStreamListEvents());
   const [selectedStream] = useStateEvents(Controller.getSelectedStreamEvents());
-  const streamNames = Object.keys(history);
-  const select = (streamName)=>{
-    Controller.selectStream(streamName);
+  const select = (index)=>{
+    Controller.selectStream(index);
   }
 
   return (
@@ -18,14 +17,14 @@ const StreamList = (props)=>{
       {
         streamNames.map((streamName,index)=>(
           <div
-            className={`${Styles.item} ${streamName===selectedStream?Styles.selected:Styles.notSelected}`}
+            className={`${Styles.item} ${index===selectedStream?Styles.selected:Styles.notSelected}`}
             key={index}
-            onClick={()=>select(streamName)}
+            onClick={()=>select(index)}
           >
             <div
               className={`${Styles.button}`}
             >
-              {streamName}
+              {`${index}: ${streamName}`}
             </div>
           </div>
         ))

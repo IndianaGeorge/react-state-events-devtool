@@ -6,58 +6,102 @@ import { StateEvents } from 'react-state-events'
 const sourceName = 'react-state-event-devTool';
 
 export default class HistoryController {
-    constructor() {
-        this.historyEvents = new StateEvents({});
-        this.selectedStateEvents = new StateEvents({});
-        this.selectedStreamEvents = new StateEvents(null);
-    }
+  constructor() {
+    this.streamListEvents = new StateEvents([]);
+    this.eventListEvents = new StateEvents([]);
+    this.selectedStateEvents = new StateEvents({});
+    this.selectedStreamEvents = new StateEvents(null);
+  }
 
-    getHistoryEvents() {
-        return this.historyEvents;
-    }
+  getStreamListEvents() {
+    return this.streamListEvents;
+  }
 
-    getSelectedStateEvents() {
-        return this.selectedStateEvents;
-    }
+  getEventListEvents() {
+    return this.eventListEvents;
+  }
 
-    getSelectedStreamEvents() {
-        return this.selectedStreamEvents;
-    }
+  getSelectedStateEvents() {
+    return this.selectedStateEvents;
+  }
 
-    selectStream(streamName) {
-        if (this.historyEvents.current[streamName]) {
-            this.selectedStreamEvents.publish(streamName);
-        }
-    }
+  getSelectedStreamEvents() {
+    return this.selectedStreamEvents;
+  }
 
-    selectState(streamName,index) {
-        console.log(`Tried to select ${streamName}, index ${index}`)
-        const selected = { ...this.selectedStateEvents.current, [streamName]:index };
-        // tell site about it via message!!
-        this.selectedStateEvents.publish(selected);
+  selectStream(streamIndex) {
+    if (this.streamListEvents.current[streamIndex]) {
+      this.selectedStreamEvents.publish(streamIndex);
+      this.requestStreamHistory(streamIndex);
     }
+  }
 
-    sendEvent(newEventPayload) {
-        console.log("sending event...");
-        alert("oi!");
-        chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
-            chrome.tabs.sendMessage(
-                tabs[0].id,
-                { source: "react-state-event-devTool", payload: newEventPayload, debugName: this.selectedStreamEvents.getCurrent()}
-            );
-        });
-    }
+  selectState(streamName,index) {
+    /*
+    console.log(`Tried to select ${streamName}, index ${index}`)
+    const selected = { ...this.selectedStateEvents.current, [streamName]:index };
+    // tell site about it via message!!
+    this.selectedStateEvents.publish(selected);
+    */
+  }
 
-    receiveEvent(streamName, newEventPayload) {
-        const history = { ...this.historyEvents.getCurrent() }; // hey React, this is new!
-        const newEvent = {time: new Date(), payload: newEventPayload };
-        if (history[streamName]) { // TODO: potential bug, use HasOwn?
-            history[streamName].push(newEvent); // add to existing stream
-        }
-        else {
-            history[streamName] = [newEvent]; // create a new stream
-        }
-        this.historyEvents.publish(history);
+  sendEvent(newEventPayload) {
+    /*
+    console.log("sending event...");
+    alert("oi!");
+    chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
+      chrome.tabs.sendMessage(
+        tabs[0].id,
+        { source: "react-state-event-devTool", payload: newEventPayload, debugName: this.selectedStreamEvents.getCurrent()}
+      );
+    });
+    */
+  }
+
+  receiveEvent(eventType, newEventPayload) {
+    switch (eventType) {
+      case "getStreamNames":
+        console.log("Devtool handling getStreamNames response");
+        this.streamListEvents.publish(newEventPayload);
+        break;
+
+      case "getStateEvents":
+        console.log("Devtool handling getStateEvents response");
+        this.eventListEvents.publish(newEventPayload);
+        break;
+    
+      default:
+        break;
     }
+    /*
+    const history = { ...this.historyEvents.getCurrent() }; // hey React, this is new!
+    const newEvent = {time: new Date(), payload: newEventPayload };
+    if (history[streamName]) { // TODO: potential bug, use HasOwn?
+      history[streamName].push(newEvent); // add to existing stream
+    }
+    else {
+      history[streamName] = [newEvent]; // create a new stream
+    }
+    this.historyEvents.publish(history);
+    */
+  }
+
+  requestStreamHistory(streamId) {
+    chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
+      chrome.tabs.sendMessage(
+        tabs[0].id,
+        {source: "react-state-event-devTool", type: "getStateEvents", spec: streamId}
+      );    
+    });
+  }
+
+  requestStreamList() {
+    chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
+      chrome.tabs.sendMessage(
+        tabs[0].id,
+        {source: "react-state-event-devTool", type: "getStreamNames"}
+      );
+    });  
+  }
 
 }
