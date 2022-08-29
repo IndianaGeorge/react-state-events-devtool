@@ -9,16 +9,19 @@ import EventInput from './view/EventInput';
 
 import Styles from './App.module.css';
 
+const port = chrome.runtime.connect({name: 'react-state-event-devtool_connection'});
 
 function App() {
   const Controller = useContext(historyContext);
-  const handleContentMessage = (msg, sender, respFn) => {
-    Controller.receiveEvent(msg.type, msg.payload);
-    return null;
-  }
-  
+  useEffect(() => {
+    Controller.setPort(port);
+    return () => Controller.disconnectPort();
+  }, [port]);
+
+  /*
   useEffect(() => {
     chrome.runtime.onMessage.addListener(handleContentMessage);
+    alert('popup Added chrome message listener');
 
     // initial request for existing streams
     Controller.requestStreamList();
@@ -27,6 +30,9 @@ function App() {
 
     return () => chrome.runtime.onMessage.removeListener(handleContentMessage);
   }, []);
+
+  alert('Redrawing App');
+*/
 
   return (
     <div className={`${Styles.main}`}>

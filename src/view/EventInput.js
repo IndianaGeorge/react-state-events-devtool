@@ -1,16 +1,18 @@
 import React, { useContext, useState } from 'react';
 
 import { historyContext } from '../context/historyContext';
+import { useStateEvents } from 'react-state-events';
 
 import Styles from './EventInput.module.css';
 
 function EventInput() {
   const Controller = useContext(historyContext);
+  const [selectedStream] = useStateEvents(Controller.getSelectedStreamEvents());
   const [value, setValue] = useState("");
 
   const onAdd = () => {
     try {
-      Controller.sendEvent(JSON.parse(value));
+      Controller.sendEvent(selectedStream, JSON.parse(value));
       setValue('');
     }
     catch {

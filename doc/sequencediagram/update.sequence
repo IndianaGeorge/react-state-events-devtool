@@ -1,0 +1,6 @@
+title Update Stream
+
+Popup->(1)Background:UPDATE(stream,state)
+Background->(1)Popup:UPDATE(stream,state)
+Background->(1)Content:SET(stream,state)
+Content->(1)Current tab:SET(stream,state)

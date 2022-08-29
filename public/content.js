@@ -1,19 +1,54 @@
-// get messages from library
+// get messages from library in same tab, send to background
 window.addEventListener("message", function (event) {
-  if (event.source == window && event.data.source === "react-state-event" && event.data.type && event.data.payload) {
-    chrome.runtime.sendMessage(event.data);
+  if (event.source == window
+    && event.origin == window.origin
+    ) {
+      let data = null;
+      switch (event.data.type) {
+        case "react-state-event-devTool-streamId":
+          if (!event.data.id || !event.data.payload) {
+            return;
+          }
+          data = {action:"new-stream", type:"StateEvents", id:event.data.id, payload:event.data.payload};
+          break;
+        case "react-state-event-devTool-notify":
+          if (!event.data.id || !event.data.payload) {
+            return;
+          }
+          data = {action:"update", type:"StateEvents", id:event.data.id, payload:event.data.payload};
+          break;
+        case "react-state-event-initrequest":
+          if (!event.data.name) {
+            return;
+          }
+          data = {action:"new-stream", type:"ExternalStateEvents", id:event.data.name, payload:event.data.name};
+          break;
+        case "react-state-event":
+          if (!event.data.name || !event.data.success) {
+            return;
+          }
+          data = {action:"update", type:"ExternalStateEvents", id:event.data.name, payload:event.data.payload};
+          break;
+        default:
+          return;
+      }
+      chrome.runtime.sendMessage(data);
   }
 }, false);
 
-// when history is clicked: flag debugName
-// when message arrives:
-// if flagged compare data (sync check) to history entry, set current to history, unflag
-// if not flagged: if not on last history entry, wipe future history, add entry. The future is now, old man.
-
-
-// get messages from devtool app, forward to library
+// get messages from background, forward to library in same tab
 function handleAppMessage(msg, sender, respFn) {
-  if (msg.source === 'react-state-event-devTool') {
+  if (msg.origin !== 'react-state-event-devTool') {
+    switch (msg.type) {
+      case "StateEvents":
+        window.postMessage({type: "react-state-event-devTool-set", id: msg.id, payload: msg.payload}, window.origin);
+        break;
+      case "ExternalStateEvents":
+        window.postMessage({type: "react-state-event", name: msg.id, success: true, payload: msg.payload}, window.origin);
+        break;
+      default:
+        return;
+    }
     window.postMessage(msg, "*");
   };
 }

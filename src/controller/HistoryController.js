@@ -2,6 +2,7 @@
 /* global chrome */
 
 import { StateEvents } from 'react-state-events'
+import { useState } from 'react';
 
 const sourceName = 'react-state-event-devTool';
 
@@ -11,6 +12,11 @@ export default class HistoryController {
     this.eventListEvents = new StateEvents([]);
     this.selectedStateEvents = new StateEvents({});
     this.selectedStreamEvents = new StateEvents(null);
+    this.port = null;
+  }
+
+  disconnectPort() {
+    this.setPort(null);
   }
 
   getStreamListEvents() {
@@ -36,43 +42,30 @@ export default class HistoryController {
     }
   }
 
-  selectState(streamName,index) {
-    /*
-    console.log(`Tried to select ${streamName}, index ${index}`)
-    const selected = { ...this.selectedStateEvents.current, [streamName]:index };
-    // tell site about it via message!!
-    this.selectedStateEvents.publish(selected);
-    */
-  }
-
-  sendEvent(newEventPayload) {
-    /*
-    console.log("sending event...");
-    alert("oi!");
-    chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
-      chrome.tabs.sendMessage(
-        tabs[0].id,
-        { source: "react-state-event-devTool", payload: newEventPayload, debugName: this.selectedStreamEvents.getCurrent()}
-      );
-    });
-    */
-  }
-
-  receiveEvent(eventType, newEventPayload) {
-    switch (eventType) {
-      case "getStreamNames":
-        console.log("Devtool handling getStreamNames response");
-        this.streamListEvents.publish(newEventPayload);
-        break;
-
-      case "getStateEvents":
-        console.log("Devtool handling getStateEvents response");
-        this.eventListEvents.publish(newEventPayload);
-        break;
-    
-      default:
-        break;
+  selectState(streamId,index) {
+    if (this.port) {
+      this.port.postMessage({
+        action: "set",
+        payload: {
+          streamId: streamId,
+          index: index,
+        },
+      });  
     }
+  }
+
+  sendEvent(streamId, newEventPayload) {
+    if (this.port) {
+      this.port.postMessage({
+        action: "update",
+        payload: {
+          streamId: streamId,
+          value: newEventPayload,
+        },
+      });  
+    }
+  }
+
     /*
     const history = { ...this.historyEvents.getCurrent() }; // hey React, this is new!
     const newEvent = {time: new Date(), payload: newEventPayload };
@@ -84,24 +77,49 @@ export default class HistoryController {
     }
     this.historyEvents.publish(history);
     */
+
+  onBgMsg (msg) {
+    switch (msg.action) {
+      case "list":
+        if (msg.payload) {
+          this.streamListEvents.publish([...msg.payload]);
+          alert(`Got stream list with ${msg.payload.length} streams`)
+        }
+        break;
+      case "get":
+        if (msg.payload) {
+          this.eventListEvents.publish([...msg.payload]);
+          alert(`Got event list with ${msg.payload.length} events`)
+        }
+        break;
+      case "append":
+        this.eventListEvents.publish([this.eventListEvents.current, ...msg.payload]);
+        break;
+      default:
+        break;
+    }
+  }
+
+  setPort(port) {
+    if (this.port) {
+      this.port.onMessage.removeListener(this.onBgMsg);
+    }
+    this.port = port;
+    if (this.port) {
+      this.port.onMessage.addListener(this.onBgMsg);
+    }
   }
 
   requestStreamHistory(streamId) {
-    chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
-      chrome.tabs.sendMessage(
-        tabs[0].id,
-        {source: "react-state-event-devTool", type: "getStateEvents", spec: streamId}
-      );    
-    });
+    if (this.port) {
+      this.port.postMessage({action: "get", streamId: streamId});
+    }
   }
 
   requestStreamList() {
-    chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
-      chrome.tabs.sendMessage(
-        tabs[0].id,
-        {source: "react-state-event-devTool", type: "getStreamNames"}
-      );
-    });  
+    if (this.port) {
+      this.port.postMessage({action: "list"});
+    }
   }
 
 }

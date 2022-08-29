@@ -1,5 +1,10 @@
+// Hideous hint for linter so chrome is recognized as a global variable
+/* global chrome */
+
+
 import React, { useContext, useState } from 'react';
 import { useStateEvents } from 'react-state-events';
+import { useEffect } from 'react/cjs/react.production.min';
 import { historyContext } from '../context/historyContext';
 import Clock from './components/Clock';
 import PayloadBox from './components/PayloadBox';
@@ -16,13 +21,25 @@ const pad = (number,digits)=>{
   return text.padStart(digits, '0');
 }
 
-const StreamList = (props)=>{
+const handleBackgroundMessage = (parm) => {
+  console.log('----------Got message from BG-----------');
+  console.log(parm)
+};
+
+const StreamList = ()=>{
   const Controller = useContext(historyContext);
   const [stateEvents] = useStateEvents(Controller.getEventListEvents());
   const [selected] = useStateEvents(Controller.getSelectedStateEvents());
   const [selectedStream] = useStateEvents(Controller.getSelectedStreamEvents());
   const selectedState = selectedStream?selected[selectedStream]:null;
+  // alert (`Redrawing with stateEvents containing ${stateEvents.length} events`);
 
+  useEffect(()=>{
+    alert("Before port");
+    const port = chrome.runtime.connect({name: 'react-state-event-devtool_connection'});
+    Controller.setPort(port);
+    Controller.requestStreamList();
+  },[]);
   const select = (index)=>{
     Controller.selectState(selectedStream,index);
   }
