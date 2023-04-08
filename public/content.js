@@ -1,7 +1,8 @@
+/*global chrome*/
 // get messages from library in same tab, send to background
 window.addEventListener("message", function (event) {
-  if (event.source == window
-    && event.origin == window.origin
+  if (event.source === window
+    && event.origin === window.origin
     ) {
       let data = null;
       switch (event.data.type) {

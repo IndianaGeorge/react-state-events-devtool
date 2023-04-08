@@ -10,7 +10,15 @@ _Use case: the devTool panel is opened_
 * Popup requests the full history of the first stream if there is any
 * Background responds with the full history of the stream
 
-![Init sequence diagram](doc/svg/init.svg)
+```mermaid
+sequenceDiagram
+    participant Popup
+    participant Background
+    Popup->>+Background: List
+    Background-->>-Popup: List of streams by type
+    Popup->>+Background: Get(StateEvents, 0)
+    Background-->>-Popup: list of events
+```
 
 ## Message sequence: Changing stream
 _Use case: one of the stream buttons in the devTool panel is clicked_
@@ -101,7 +109,10 @@ These are the different message formats sent from the the background to the DevT
 ```json
 {
     action: "list",
-    payload: [...streamIds]
+    payload: {
+        ExternalStateEvents: [...streamIds],
+        StateEvents: [...streamIds],
+    }
 }
 ```
 

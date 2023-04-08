@@ -1,6 +1,8 @@
+/*global chrome*/
 const stateHistory = {}; // history content
 const historyIndex = {}; // current history entry if not the last
 
+// checks that obj has the listed props
 const validate = (obj, props) => {
   if (typeof(props) != 'object') {
     return false;
@@ -27,7 +29,10 @@ chrome.runtime.onMessage.addListener(function (message, sender) {
         if (!stateHistory[tabId][message.type].hasOwnProperty(message.id)) {
           stateHistory[tabId][message.type][message.id] = [];
         }
-        stateHistory[tabId][message.type][message.id].push(message.payload);
+        stateHistory[tabId][message.type][message.id].push({
+          time: Date.now(),
+          payload: message.payload,
+        });
         console.log(`Updated ${message.type}/${message.id} from ${tabId}`);
         break;
       case "new-stream":
@@ -68,7 +73,7 @@ chrome.runtime.onConnect.addListener(function (port) {
             streamTypes[streamType] = Object.keys(tabHistory[streamType]);
           }
           port.postMessage({action: "list", payload: streamTypes}); // to panel
-          alert('Send Stream List');
+          alert('Send Stream List: '+JSON.stringify(streamTypes));
           console.log(streamTypes);
           break;
           }
@@ -143,6 +148,9 @@ chrome.runtime.onConnect.addListener(function (port) {
           }
           break;
         }
+        default:
+          console.error(`unknown action ${msg.action} requested`);
+          break;
       }
     });
   });

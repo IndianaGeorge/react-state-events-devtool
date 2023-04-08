@@ -2,13 +2,12 @@
 /* global chrome */
 
 import { StateEvents } from 'react-state-events'
-import { useState } from 'react';
 
 const sourceName = 'react-state-event-devTool';
 
 export default class HistoryController {
   constructor() {
-    this.streamListEvents = new StateEvents([]);
+    this.streamListEvents = new StateEvents({});
     this.eventListEvents = new StateEvents([]);
     this.selectedStateEvents = new StateEvents({});
     this.selectedStreamEvents = new StateEvents(null);
@@ -35,10 +34,10 @@ export default class HistoryController {
     return this.selectedStreamEvents;
   }
 
-  selectStream(streamIndex) {
-    if (this.streamListEvents.current[streamIndex]) {
-      this.selectedStreamEvents.publish(streamIndex);
-      this.requestStreamHistory(streamIndex);
+  selectStream(streamType, streamId) {
+    if (this.streamListEvents.current?.[streamType]?.includes?.(streamId)) {
+      this.selectedStreamEvents.publish({type: streamType, index: streamId});
+      this.requestStreamHistory(streamType, streamId);
     }
   }
 
@@ -82,14 +81,16 @@ export default class HistoryController {
     switch (msg.action) {
       case "list":
         if (msg.payload) {
-          this.streamListEvents.publish([...msg.payload]);
-          alert(`Got stream list with ${msg.payload.length} streams`)
+          let payload = msg.payload;
+          alert(`Publishing new payload: ${JSON.stringify({...payload})}`);
+          this.streamListEvents.publish({...payload});
+        } else {
+          console.error("Got a list of streams but no payload");
         }
         break;
       case "get":
         if (msg.payload) {
           this.eventListEvents.publish([...msg.payload]);
-          alert(`Got event list with ${msg.payload.length} events`)
         }
         break;
       case "append":
@@ -102,17 +103,25 @@ export default class HistoryController {
 
   setPort(port) {
     if (this.port) {
-      this.port.onMessage.removeListener(this.onBgMsg);
+      alert("had a port already! resetting");
+      this.port.onMessage.removeListener(this.onBgMsg.bind(this));
     }
     this.port = port;
     if (this.port) {
-      this.port.onMessage.addListener(this.onBgMsg);
+      alert("Setting the port");
+      this.port.onMessage.addListener(this.onBgMsg.bind(this));
     }
   }
 
-  requestStreamHistory(streamId) {
+  requestStreamHistory(streamType, streamId) {
     if (this.port) {
-      this.port.postMessage({action: "get", streamId: streamId});
+      this.port.postMessage({
+        action: "get",
+        payload: {
+          streamType: streamType,
+          streamId: streamId,
+        },
+      });
     }
   }
 

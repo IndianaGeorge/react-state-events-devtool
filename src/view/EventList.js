@@ -2,9 +2,8 @@
 /* global chrome */
 
 
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { useStateEvents } from 'react-state-events';
-import { useEffect } from 'react/cjs/react.production.min';
 import { historyContext } from '../context/historyContext';
 import Clock from './components/Clock';
 import PayloadBox from './components/PayloadBox';
@@ -21,17 +20,12 @@ const pad = (number,digits)=>{
   return text.padStart(digits, '0');
 }
 
-const handleBackgroundMessage = (parm) => {
-  console.log('----------Got message from BG-----------');
-  console.log(parm)
-};
-
 const StreamList = ()=>{
   const Controller = useContext(historyContext);
   const [stateEvents] = useStateEvents(Controller.getEventListEvents());
   const [selected] = useStateEvents(Controller.getSelectedStateEvents());
   const [selectedStream] = useStateEvents(Controller.getSelectedStreamEvents());
-  const selectedState = selectedStream?selected[selectedStream]:null;
+  const selectedStateIndex = selectedStream?.index?selected[selectedStream.index]:null;
   // alert (`Redrawing with stateEvents containing ${stateEvents.length} events`);
 
   useEffect(()=>{
@@ -39,7 +33,7 @@ const StreamList = ()=>{
     const port = chrome.runtime.connect({name: 'react-state-event-devtool_connection'});
     Controller.setPort(port);
     Controller.requestStreamList();
-  },[]);
+  },[Controller]);
   const select = (index)=>{
     Controller.selectState(selectedStream,index);
   }
@@ -48,8 +42,8 @@ const StreamList = ()=>{
       {
         selectedStream? stateEvents.map((stateEvent,index)=>(
           <li className={Styles.eventLine} key={index} onClick={()=>select(index)}>
-            <Clock lit={index===selectedState}>{msToTimeString(stateEvent.time)}</Clock>
-            <PayloadBox selected={index===selectedState}>{JSON.stringify(stateEvent.payload,null,2)}</PayloadBox>
+            <Clock lit={index===selectedStateIndex}>{msToTimeString(stateEvent.time)}</Clock>
+            <PayloadBox selected={index===selectedStateIndex}>{JSON.stringify(stateEvent.payload,null,2)}</PayloadBox>
           </li>
         )) : null
       }
