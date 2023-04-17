@@ -29,7 +29,6 @@ const StreamList = ()=>{
   // alert (`Redrawing with stateEvents containing ${stateEvents.length} events`);
 
   useEffect(()=>{
-    alert("Before port");
     const port = chrome.runtime.connect({name: 'react-state-event-devtool_connection'});
     Controller.setPort(port);
     Controller.requestStreamList();

@@ -94,7 +94,12 @@ export default class HistoryController {
         }
         break;
       case "append":
-        this.eventListEvents.publish([this.eventListEvents.current, ...msg.payload]);
+        if (this.selectedStreamEvents.current) {
+          const cstream = this.selectedStreamEvents.current;
+          if ((cstream.type === msg.type) && (cstream.index === msg.id)) {
+            this.eventListEvents.publish([...this.eventListEvents.current, {time: Date.now(), payload: msg.payload}]);
+          }
+        }
         break;
       default:
         break;
@@ -108,7 +113,6 @@ export default class HistoryController {
     }
     this.port = port;
     if (this.port) {
-      alert("Setting the port");
       this.port.onMessage.addListener(this.onBgMsg.bind(this));
     }
   }

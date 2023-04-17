@@ -1,6 +1,7 @@
 /*global chrome*/
 const stateHistory = {}; // history content
 const historyIndex = {}; // current history entry if not the last
+let currentPort = null; // connected popup for append messages
 
 // checks that obj has the listed props
 const validate = (obj, props) => {
@@ -42,13 +43,22 @@ chrome.runtime.onMessage.addListener(function (message, sender) {
       default:
         break;
     }
-  }
+
+    // append message
+    if (currentPort) { // there is a connected popup
+      currentPort.postMessage({action: "append", type: message.type, id: message.id, payload: message.payload}); // to panel
+    }
+}
   else {
     // message came from ???
   }
 });
 
 chrome.runtime.onConnect.addListener(function (port) {
+  currentPort = port; // keep most recent popup port connection for append messages
+  port.onDisconnect.addListener(function() {
+    currentPort = null;
+  });
   // message came from panel
   port.onMessage.addListener(function (msg) {
     console.log('---------Got a message from popup!-----');
@@ -154,6 +164,9 @@ chrome.runtime.onConnect.addListener(function (port) {
       }
     });
   });
+
+  // message came from a tab
+
 });
 
 

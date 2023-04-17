@@ -19,15 +19,22 @@ sequenceDiagram
     Popup->>+Background: Get(StateEvents, 0)
     Background-->>-Popup: list of events
 ```
-
+---
 ## Message sequence: Changing stream
 _Use case: one of the stream buttons in the devTool panel is clicked_
 
 * Popup requests the full history of the stream with the id that was clicked
 * Background responds with the full history of the stream
 
-![Change sequence diagram](doc/svg/change.svg)
+```mermaid
+sequenceDiagram
+    participant Popup
+    participant Background
+    Popup->>+Background: Get(StateEvents, 0)
+    Background-->>-Popup: list of events
+```
 
+---
 ## Message sequence: Updating with a new SET
 _Use case: a valid JSON state is typed in the field and the button is clicked_
 
@@ -38,6 +45,7 @@ _Use case: a valid JSON state is typed in the field and the button is clicked_
 
 ![Update sequence diagram](doc/svg/update.svg)
 
+---
 ## Message sequence: Setting state to history entry
 _Use case: A previous entry in the history list is clicked
 
@@ -48,6 +56,7 @@ _Use case: A previous entry in the history list is clicked
 
 ![Update sequence diagram](doc/svg/set.svg)
 
+---
 ## Message format: from DevTools panel to background
 
 These are the different message formats sent from the DevTools panel to the background:
@@ -93,8 +102,9 @@ These are the different message formats sent from the DevTools panel to the back
     action: "list"
 }
 ```
-## Message format: from background to DevTools panel
 
+---
+## Message format: from background to DevTools panel
 These are the different message formats sent from the the background to the DevTools panel:
 
 ### Response to request full history of stream (GET)
@@ -116,8 +126,18 @@ These are the different message formats sent from the the background to the DevT
 }
 ```
 
-## Message format: from content to background
+### Update from content containing single event
+```json
+{
+    action: "append",
+    type: message.type,
+    id: message.id,
+    payload: message.payload
+}
+```
 
+---
+## Message format: from content to background
 These are the different message formats sent in reaction to an `event` received via a `message` window event in the content injected in the tab. The reaction messages are sent to the background via `chrome.runtime.sendMessage`.
 The `event` is required to have `event.source` equal to the same window as the content and `event.origin` equal to the same origin as the content, so it should only come from the same tab where the content was injected.
 
@@ -161,6 +181,7 @@ The `event` is required to have `event.source` equal to the same window as the c
 }
 ```
 
+---
 ## Message format: from content to library
 These are the different message formats sent in reaction to a `msg` from background.
 The reaction messages are sent to the library in the tab where content was injected and
@@ -185,6 +206,7 @@ origin is set to the origin of `msg`.
 }
 ```
 
+---
 ## Message format: from content to library in tab
 These are the different message formats sent in reaction to a `msg` received via a `chrome.runtime.onMessage` listener in the content injected in the tab. The reaction messages are sent within the same tab via `window.postMessage` and the origin is set to the same window.
 The `msg` is required to have `msg.origin` equal to `react-state-event-devTool`, to verify it comes from the devTool background.
