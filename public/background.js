@@ -136,7 +136,7 @@ chrome.runtime.onConnect.addListener(function (port) {
             stateHistory[tabId][payload.streamType][payload.streamId].splice(spliceFrom); // remove history from insertion point forwards
             delete historyIndex[tabId][payload.streamType][payload.streamId]; // stream not in history mode anymore
           }
-          stateHistory[tabId][payload.streamType][payload.streamId].push(payload.value);
+          stateHistory[tabId][payload.streamType][payload.streamId].push({ time: Date.now(), payload: payload.value });
           console.log(`Updated ${payload.streamType}/${payload.streamId} at ${tabId} from tools panel`);
           port.postMessage({action: "append", payload: {streamType: payload.streamType, streamId: payload.streamId, value: payload.value}}); // send the update back to panel
           chrome.tabs.sendMessage(tabId, {type: payload.streamType, id: payload.streamId, payload: payload.value}); // send a new state to injected content in current tab
@@ -163,7 +163,7 @@ chrome.runtime.onConnect.addListener(function (port) {
             historyIndex[tabId][payload.streamType][payload.streamId] = payload.index; // record new position
             console.log(`Set ${payload.streamType}/${payload.streamId} at ${tabId} to history ${payload.index} from tools panel`);
             port.postMessage({action: "set", payload: {streamType: payload.streamType, streamId: payload.streamId, index: payload.index}}); // send the message back to panel
-            chrome.tabs.sendMessage(tabId, {type: payload.streamType, id: payload.streamId, payload: stream[payload.index]}); // send a new state to injected content in current tab
+            chrome.tabs.sendMessage(tabId, {type: payload.streamType, id: payload.streamId, payload: stream[payload.index].payload}); // send a new state to injected content in current tab
           }
           break;
         }

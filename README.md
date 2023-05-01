@@ -56,14 +56,23 @@ sequenceDiagram
 
 ---
 ## Message sequence: Setting state to history entry
-_Use case: A previous entry in the history list is clicked
+_Use case: A previous entry in the history list is clicked_
 
 * Popup sends a SET message with the history index to use
 * Background responds with the same message (set) to popup, to confirm
 * Background sends the state in the history entry to content injected in current tab
-* //////// TODO: Not implemented yet!
 
-![Update sequence diagram](doc/svg/set.svg)
+```mermaid
+sequenceDiagram
+    participant Popup
+    participant Background
+    participant Content
+    participant Current tab
+    Popup->>+Background: Set(streamType, streamId, index)
+    Background-->>-Popup: Set(streamType, streamId, index)
+    Background->>+Content: type, id, payload
+    Content->>+Current tab: type, id, payload
+```
 
 ---
 ## Message format: from DevTools panel to background

@@ -36,11 +36,12 @@ export default class HistoryController {
     }
   }
 
-  selectState(streamId,index) {
+  selectState(streamType, streamId, index) {
     if (this.port) {
       this.port.postMessage({
         action: "set",
         payload: {
+          streamType: streamType,
           streamId: streamId,
           index: index,
         },

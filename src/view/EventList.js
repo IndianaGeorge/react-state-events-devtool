@@ -33,7 +33,7 @@ const StreamList = ()=>{
     Controller.requestStreamList();
   },[Controller]);
   const select = (index)=>{
-    Controller.selectState(selectedStream,index);
+    Controller.selectState(selectedStream.type, selectedStream.index, index);
   }
   return (
     <ol className={Styles.eventList}>

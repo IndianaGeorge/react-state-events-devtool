@@ -1,6 +1,0 @@
-title Set Stream to history index
-
-Popup->(1)Background:SET(stream,index)
-Background->(1)Popup:SET(stream,index)
-Background->(1)Content:SET(stream,state)
-Content->(1)Current tab:SET(stream,state)
