@@ -1,9 +1,4 @@
-// Hideous hint for linter so chrome is recognized as a global variable
-/* global chrome */
-
 import { StateEvents } from 'react-state-events'
-
-const sourceName = 'react-state-event-devTool';
 
 export default class HistoryController {
   constructor() {
@@ -53,29 +48,18 @@ export default class HistoryController {
     }
   }
 
-  sendEvent(streamId, newEventPayload) {
+  sendEvent(streamType, streamId, newEventPayload) {
     if (this.port) {
       this.port.postMessage({
         action: "update",
         payload: {
+          streamType: streamType,
           streamId: streamId,
           value: newEventPayload,
         },
       });  
     }
   }
-
-    /*
-    const history = { ...this.historyEvents.getCurrent() }; // hey React, this is new!
-    const newEvent = {time: new Date(), payload: newEventPayload };
-    if (history[streamName]) { // TODO: potential bug, use HasOwn?
-      history[streamName].push(newEvent); // add to existing stream
-    }
-    else {
-      history[streamName] = [newEvent]; // create a new stream
-    }
-    this.historyEvents.publish(history);
-    */
 
   onBgMsg (msg) {
     switch (msg.action) {
@@ -94,10 +78,11 @@ export default class HistoryController {
         }
         break;
       case "append":
-        if (this.selectedStreamEvents.current) {
+        if (msg.payload && this.selectedStreamEvents.current) {
           const cstream = this.selectedStreamEvents.current;
-          if ((cstream.type === msg.type) && (cstream.index === msg.id)) {
-            this.eventListEvents.publish([...this.eventListEvents.current, {time: Date.now(), payload: msg.payload}]);
+          const payload = msg.payload;
+          if ((cstream.type === payload.streamType) && (cstream.index === payload.streamId)) {
+            this.eventListEvents.publish([...this.eventListEvents.current, {time: Date.now(), payload: payload.value}]);
           }
         }
         break;

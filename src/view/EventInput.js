@@ -12,7 +12,7 @@ function EventInput() {
 
   const onAdd = () => {
     try {
-      Controller.sendEvent(selectedStream, JSON.parse(value));
+      Controller.sendEvent(selectedStream.type, selectedStream.index, JSON.parse(value));
       setValue('');
     }
     catch {

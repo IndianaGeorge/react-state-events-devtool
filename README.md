@@ -41,9 +41,18 @@ _Use case: a valid JSON state is typed in the field and the button is clicked_
 * Popup sends a new state to background
 * Background responds with same message (update) to popup, to confirm
 * Background sends a new state to content injected in current tab
-* //////// missing external type flow!!
 
-![Update sequence diagram](doc/svg/update.svg)
+```mermaid
+sequenceDiagram
+    participant Popup
+    participant Background
+    participant Content
+    participant Current tab
+    Popup->>+Background: Update(streamType, streamId, value)
+    Background-->>-Popup: Update(streamType, streamId, value)
+    Background->>+Content: Update(streamType, streamId, value)
+    Content->>+Current tab: type, id, payload
+```
 
 ---
 ## Message sequence: Setting state to history entry
@@ -130,9 +139,11 @@ These are the different message formats sent from the the background to the DevT
 ```json
 {
     action: "append",
-    type: message.type,
-    id: message.id,
-    payload: message.payload
+    payload: {
+        streamType: message.type,
+        streamId: message.id,
+        value: message.payload,
+    }
 }
 ```
 

@@ -26,7 +26,6 @@ const StreamList = ()=>{
   const [selected] = useStateEvents(Controller.getSelectedStateEvents());
   const [selectedStream] = useStateEvents(Controller.getSelectedStreamEvents());
   const selectedStateIndex = selectedStream?.index?selected[selectedStream.index]:null;
-  // alert (`Redrawing with stateEvents containing ${stateEvents.length} events`);
 
   useEffect(()=>{
     const port = chrome.runtime.connect({name: 'react-state-event-devtool_connection'});

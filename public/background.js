@@ -46,7 +46,14 @@ chrome.runtime.onMessage.addListener(function (message, sender) {
 
     // append message
     if (currentPort) { // there is a connected popup
-      currentPort.postMessage({action: "append", type: message.type, id: message.id, payload: message.payload}); // to panel
+      currentPort.postMessage({
+        action: "append",
+        payload: {
+          streamType: message.type,
+          streamId: message.id,
+          value: message.payload
+        }
+      }); // to panel
     }
 }
   else {
@@ -84,7 +91,6 @@ chrome.runtime.onConnect.addListener(function (port) {
           }
           port.postMessage({action: "list", payload: streamTypes}); // to panel
           alert('Send Stream List: '+JSON.stringify(streamTypes));
-          console.log(streamTypes);
           break;
           }
         case "get":{
@@ -102,9 +108,13 @@ chrome.runtime.onConnect.addListener(function (port) {
           break;
           }
         case "update": {
+          console.log(msg);
           if (!validate(msg,['payload'])) {
             return; // message failed validation
-          }      
+          }
+          if (!validate(msg.payload,['streamType','streamId','value'])) {
+            return; // payload failed validation
+          }
           const payload = msg.payload;
           if (!stateHistory.hasOwnProperty(tabId)) {
             stateHistory[tabId] = {};
@@ -115,7 +125,6 @@ chrome.runtime.onConnect.addListener(function (port) {
           if (!stateHistory[tabId][payload.streamType].hasOwnProperty(payload.streamId)) {
             stateHistory[tabId][payload.streamType][payload.streamId] = [];
           }
-
           if (!historyIndex.hasOwnProperty(tabId)) {
             historyIndex[tabId] = {};
           }
@@ -129,7 +138,7 @@ chrome.runtime.onConnect.addListener(function (port) {
           }
           stateHistory[tabId][payload.streamType][payload.streamId].push(payload.value);
           console.log(`Updated ${payload.streamType}/${payload.streamId} at ${tabId} from tools panel`);
-          port.postMessage({action: "update", payload: {streamType: payload.streamType, streamId: payload.streamId, value: payload.value}}); // send the update back to panel
+          port.postMessage({action: "append", payload: {streamType: payload.streamType, streamId: payload.streamId, value: payload.value}}); // send the update back to panel
           chrome.tabs.sendMessage(tabId, {type: payload.streamType, id: payload.streamId, payload: payload.value}); // send a new state to injected content in current tab
           break;
           }
