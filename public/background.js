@@ -35,6 +35,17 @@ chrome.runtime.onMessage.addListener(function (message, sender) {
           payload: message.payload,
         });
         console.log(`Updated ${message.type}/${message.id} from ${tabId}`);
+        // append message
+        if (currentPort) { // there is a connected popup
+          currentPort.postMessage({
+            action: "append",
+            payload: {
+              streamType: message.type,
+              streamId: message.id,
+              value: message.payload
+            }
+          }); // to panel
+        }
         break;
       case "new-stream":
         stateHistory[tabId][message.type][message.id] = [];
@@ -42,18 +53,6 @@ chrome.runtime.onMessage.addListener(function (message, sender) {
         break;
       default:
         break;
-    }
-
-    // append message
-    if (currentPort) { // there is a connected popup
-      currentPort.postMessage({
-        action: "append",
-        payload: {
-          streamType: message.type,
-          streamId: message.id,
-          value: message.payload
-        }
-      }); // to panel
     }
 }
   else {
@@ -90,7 +89,6 @@ chrome.runtime.onConnect.addListener(function (port) {
             streamTypes[streamType] = Object.keys(tabHistory[streamType]);
           }
           port.postMessage({action: "list", payload: streamTypes}); // to panel
-          alert('Send Stream List: '+JSON.stringify(streamTypes));
           break;
           }
         case "get":{

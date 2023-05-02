@@ -82,11 +82,11 @@ These are the different message formats sent from the DevTools panel to the back
 ### Set stream to JSON in input field (UPDATE)
 ```json
 {
-    action: "update",
-    payload: {
-        streamType: streamType,
-        streamId: streamId,
-        value: newEventPayload,
+    "action": "update",
+    "payload": {
+        "streamType": "streamType",
+        "streamId": "streamId",
+        "value": "newEventPayload",
     }
 }
 ```
@@ -94,11 +94,11 @@ These are the different message formats sent from the DevTools panel to the back
 ### Set stream to state from history (SET)
 ```json
 {
-    action: "set",
-    payload: {
-        streamType: streamType,
-        streamId: streamId,
-        index: index,
+    "action": "set",
+    "payload": {
+        "streamType": "streamType",
+        "streamId": "streamId",
+        "index": 0,
     }
 }
 ```
@@ -106,10 +106,10 @@ These are the different message formats sent from the DevTools panel to the back
 ### Request full history of stream (GET)
 ```json
 {
-    action: "get",
-    payload: {
-        streamType: streamType,
-        streamId: streamId,
+    "action": "get",
+    "payload": {
+        "streamType": "streamType",
+        "streamId": "streamId",
     }
 }
 ```
@@ -117,7 +117,7 @@ These are the different message formats sent from the DevTools panel to the back
 ### Request current list of streams (LIST)
 ```json
 {
-    action: "list"
+    "action": "list"
 }
 ```
 
@@ -128,18 +128,24 @@ These are the different message formats sent from the the background to the DevT
 ### Response to request full history of stream (GET)
 ```json
 {
-    action: "get",
-    payload: [...events]
+    "action": "get",
+    "payload": [
+        {
+            "streamType":"streamType",
+            "streamId":"streamId",
+            "value":"value"
+        }
+    ]
 }
 ```
 
 ### Response to request current list of streams (LIST)
 ```json
 {
-    action: "list",
-    payload: {
-        ExternalStateEvents: [...streamIds],
-        StateEvents: [...streamIds],
+    "action": "list",
+    "payload": {
+        "ExternalStateEvents": ["streamId"],
+        "StateEvents": [1],
     }
 }
 ```
@@ -147,11 +153,11 @@ These are the different message formats sent from the the background to the DevT
 ### Update from content containing single event
 ```json
 {
-    action: "append",
-    payload: {
-        streamType: message.type,
-        streamId: message.id,
-        value: message.payload,
+    "action": "append",
+    "payload": {
+        "streamType": "message.type",
+        "streamId": "message.id",
+        "value": "message.payload",
     }
 }
 ```
@@ -164,40 +170,30 @@ The `event` is required to have `event.source` equal to the same window as the c
 ## When `event.data.type` is `'react-state-event-devTool-streamId'`
 ```json
 {
-    action: "new-stream",
-    type: "StateEvents",
-    id: event.data.id,
-    payload: event.data.payload
+    "action": "new-stream",
+    "type": "StateEvents",
+    "id": "event.data.id",
+    "payload": "event.data.payload"
 }
 ```
 
 ## When `event.data.type` is `'react-state-event-devTool-notify'`
 ```json
 {
-    action: "update",
-    type: "StateEvents",
-    id: event.data.id,
-    payload: event.data.payload
+    "action": "update",
+    "type": "event.data.payload.streamType",
+    "id": "event.data.payload.streamId",
+    "payload": "event.data.payload.value"
 }
 ```
 
 ## When `event.data.type` is `'react-state-event-initrequest'`
 ```json
 {
-    action: "new-stream",
-    type: "ExternalStateEvents",
-    id: event.data.name,
-    payload: event.data.name
-}
-```
-
-## When `event.data.type` is `'react-state-event'`
-```json
-{
-    action: "update",
-    type: "ExternalStateEvents",
-    id: event.data.name,
-    payload: event.data.payload
+    "action": "new-stream",
+    "type": "ExternalStateEvents",
+    "id": "event.data.name",
+    "payload": "event.data.name"
 }
 ```
 
@@ -210,19 +206,19 @@ origin is set to the origin of `msg`.
 ## When `msg.type` is `'StateEvents'`
 ```json
 {
-    type: "react-state-event-devTool-set",
-    id: msg.id,
-    payload: msg.payload
+    "type": "react-state-event-devTool-set",
+    "id": "msg.id",
+    "payload": "msg.payload"
 }
 ```
 
 ## When `msg.type` is `'ExternalStateEvents'`
 ```json
 {
-    type: "react-state-event",
-    name: msg.id,
-    success: true,
-    payload: msg.payload
+    "type": "react-state-event",
+    "name": "msg.id",
+    "success": true,
+    "payload": "msg.payload"
 }
 ```
 
@@ -234,19 +230,19 @@ The `msg` is required to have `msg.origin` equal to `react-state-event-devTool`,
 ## When `msg.type` is `'StateEvents'`
 ```json
 {
-    type: "react-state-event-devTool-set",
-    id: msg.id,
-    payload: msg.payload
+    "type": "react-state-event-devTool-set",
+    "id": "msg.id",
+    "payload": "msg.payload"
 }
 ```
 
 ## When `msg.type` is `'ExternalStateEvents'`
 ```json
 {
-    type: "react-state-event",
-    name: msg.id,
-    success: true,
-    payload: msg.payload
+    "type": "react-state-event",
+    "name": "msg.id",
+    "success": true,
+    "payload": "msg.payload"
 }
 ```
 

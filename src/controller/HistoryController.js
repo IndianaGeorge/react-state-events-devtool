@@ -67,7 +67,6 @@ export default class HistoryController {
       case "list":
         if (msg.payload) {
           let payload = msg.payload;
-          alert(`Publishing new payload: ${JSON.stringify({...payload})}`);
           this.streamListEvents.publish({...payload});
         } else {
           console.error("Got a list of streams but no payload");

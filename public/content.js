@@ -13,22 +13,19 @@ window.addEventListener("message", function (event) {
           data = {action:"new-stream", type:"StateEvents", id:event.data.id, payload:event.data.payload};
           break;
         case "react-state-event-devTool-notify":
-          if (!event.data.id || !event.data.payload) {
+          if (!event.data.payload) {
             return;
           }
-          data = {action:"update", type:"StateEvents", id:event.data.id, payload:event.data.payload};
+          const p = event.data.payload;
+          if (p.success) {
+            data = {action:"update", type:p.streamType, id:p.streamId, payload:p.value};
+          }
           break;
         case "react-state-event-initrequest":
           if (!event.data.name) {
             return;
           }
           data = {action:"new-stream", type:"ExternalStateEvents", id:event.data.name, payload:event.data.name};
-          break;
-        case "react-state-event":
-          if (!event.data.name || !event.data.success) {
-            return;
-          }
-          data = {action:"update", type:"ExternalStateEvents", id:event.data.name, payload:event.data.payload};
           break;
         default:
           return;
