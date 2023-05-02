@@ -37,6 +37,7 @@ export default class HistoryController {
   }
 
   selectState(streamType, streamId, index) {
+    this.selectedStateEvents.publish(index);
     if (this.port) {
       this.port.postMessage({
         action: "set",
@@ -75,6 +76,7 @@ export default class HistoryController {
       case "get":
         if (msg.payload) {
           this.eventListEvents.publish([...msg.payload]);
+          this.selectedStateEvents.publish(msg.at);
         }
         break;
       case "append":
@@ -82,7 +84,13 @@ export default class HistoryController {
           const cstream = this.selectedStreamEvents.current;
           const payload = msg.payload;
           if ((cstream.type === payload.streamType) && (cstream.index === payload.streamId)) {
-            this.eventListEvents.publish([...this.eventListEvents.current, {time: Date.now(), payload: payload.value}]);
+            const events = [...this.eventListEvents.current];
+            if (payload.hasOwnProperty('at')) {
+              events.splice(payload.at);
+            }
+            events.push({time: Date.now(), payload: payload.value});
+            this.eventListEvents.publish(events);
+            this.selectedStateEvents.publish(events.length-1);
           }
         }
         break;

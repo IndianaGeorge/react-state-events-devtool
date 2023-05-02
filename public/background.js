@@ -27,8 +27,19 @@ chrome.runtime.onMessage.addListener(function (message, sender) {
     }
     switch (message.action) {
       case "update":
+        if (!stateHistory[tabId]) {
+          stateHistory[tabId] = {};
+        }
+        if (!stateHistory[tabId][message.type]) {
+          stateHistory[tabId][message.type] = {};
+        }
         if (!stateHistory[tabId][message.type].hasOwnProperty(message.id)) {
           stateHistory[tabId][message.type][message.id] = [];
+        }
+        if (historyIndex?.[tabId]?.[message.type]?.hasOwnProperty(message.id)) {
+          const spliceFrom = historyIndex[tabId][message.type][message.id]+1;
+          stateHistory[tabId][message.type][message.id].splice(spliceFrom); // remove history from insertion point forwards
+          delete historyIndex[tabId][message.type][message.id]; // stream not in history mode anymore
         }
         stateHistory[tabId][message.type][message.id].push({
           time: Date.now(),
@@ -42,7 +53,8 @@ chrome.runtime.onMessage.addListener(function (message, sender) {
             payload: {
               streamType: message.type,
               streamId: message.id,
-              value: message.payload
+              value: message.payload,
+              at: stateHistory[tabId][message.type][message.id].length-1
             }
           }); // to panel
         }
@@ -102,7 +114,11 @@ chrome.runtime.onConnect.addListener(function (port) {
           const typedStreams = typedStreamsExist ? tabHistory[payload.streamType] : {};
           const streamExists = typedStreamsExist && typedStreams.hasOwnProperty(payload.streamId);
           const stream = streamExists ? typedStreams[payload.streamId] : [];
-          port.postMessage({action: "get", payload: stream}); // to panel
+          const tabHistoryIndexExists = historyIndex.hasOwnProperty(tabId);
+          const typedHistoryIndexExists = tabHistoryIndexExists ? historyIndex[tabId].hasOwnProperty(payload.streamType) : false;
+          const streamHistoryIndexExists = typedHistoryIndexExists ? historyIndex[tabId][payload.streamType].hasOwnProperty(payload.streamId) : false;
+          const at = streamHistoryIndexExists ? historyIndex[tabId][payload.streamType][payload.streamId] : stream.length-1;
+          port.postMessage({action: "get", payload: stream, at}); // to panel
           break;
           }
         case "update": {
@@ -136,7 +152,7 @@ chrome.runtime.onConnect.addListener(function (port) {
           }
           stateHistory[tabId][payload.streamType][payload.streamId].push({ time: Date.now(), payload: payload.value });
           console.log(`Updated ${payload.streamType}/${payload.streamId} at ${tabId} from tools panel`);
-          port.postMessage({action: "append", payload: {streamType: payload.streamType, streamId: payload.streamId, value: payload.value}}); // send the update back to panel
+          port.postMessage({action: "append", payload: {streamType: payload.streamType, streamId: payload.streamId, value: payload.value, at:stateHistory[tabId][payload.streamType][payload.streamId].length-1}}); // send the update back to panel
           chrome.tabs.sendMessage(tabId, {type: payload.streamType, id: payload.streamId, payload: payload.value}); // send a new state to injected content in current tab
           break;
           }

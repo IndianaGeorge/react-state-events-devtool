@@ -25,7 +25,6 @@ const StreamList = ()=>{
   const [stateEvents] = useStateEvents(Controller.getEventListEvents());
   const [selected] = useStateEvents(Controller.getSelectedStateEvents());
   const [selectedStream] = useStateEvents(Controller.getSelectedStreamEvents());
-  const selectedStateIndex = selectedStream?.index?selected[selectedStream.index]:null;
 
   useEffect(()=>{
     const port = chrome.runtime.connect({name: 'react-state-event-devtool_connection'});
@@ -40,8 +39,8 @@ const StreamList = ()=>{
       {
         selectedStream? stateEvents.map((stateEvent,index)=>(
           <li className={Styles.eventLine} key={index} onClick={()=>select(index)}>
-            <Clock lit={index===selectedStateIndex}>{msToTimeString(stateEvent.time)}</Clock>
-            <PayloadBox selected={index===selectedStateIndex}>{JSON.stringify(stateEvent.payload,null,2)}</PayloadBox>
+            <Clock light={index>selected?'dim':'normal'}>{msToTimeString(stateEvent.time)}</Clock>
+            <PayloadBox selected={index>selected}>{JSON.stringify(stateEvent.payload,null,2)}</PayloadBox>
           </li>
         )) : null
       }

@@ -49,7 +49,7 @@ sequenceDiagram
     participant Content
     participant Current tab
     Popup->>+Background: Update(streamType, streamId, value)
-    Background-->>-Popup: Update(streamType, streamId, value)
+    Background-->>-Popup: Update(streamType, streamId, value, at)
     Background->>+Content: Update(streamType, streamId, value)
     Content->>+Current tab: type, id, payload
 ```
@@ -129,6 +129,7 @@ These are the different message formats sent from the the background to the DevT
 ```json
 {
     "action": "get",
+    "at": 1,
     "payload": [
         {
             "streamType":"streamType",
@@ -158,6 +159,7 @@ These are the different message formats sent from the the background to the DevT
         "streamType": "message.type",
         "streamId": "message.id",
         "value": "message.payload",
+        "at": 0,
     }
 }
 ```
