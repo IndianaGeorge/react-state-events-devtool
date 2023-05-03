@@ -1,4 +1,9 @@
 /*global chrome*/
+
+chrome.runtime.sendMessage({
+  action: 'reload',
+});
+
 // get messages from library in same tab, send to background
 window.addEventListener("message", function (event) {
   if (event.source === window

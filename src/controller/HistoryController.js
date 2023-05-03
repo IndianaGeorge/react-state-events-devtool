@@ -1,3 +1,6 @@
+// Hideous hint for linter so chrome is recognized as a global variable
+/* global chrome */
+
 import { StateEvents } from 'react-state-events'
 
 export default class HistoryController {
@@ -94,14 +97,30 @@ export default class HistoryController {
           }
         }
         break;
+      case 'reload':
+        this.streamListEvents.publish({});
+        this.eventListEvents.publish([]);
+        this.selectedStateEvents.publish({});
+        this.selectedStreamEvents.publish(null);
+        const boundInit = this.init.bind(this);
+        setTimeout(function () {
+          boundInit();
+        }, 1000);
+        break;
       default:
         break;
     }
   }
 
+  init() {
+    const port = chrome.runtime.connect({name: 'react-state-event-devtool_connection'});
+    this.setPort(port);
+    this.requestStreamList();
+  }
+
   setPort(port) {
     if (this.port) {
-      alert("had a port already! resetting");
+      // had a port already! resetting
       this.port.onMessage.removeListener(this.onBgMsg.bind(this));
     }
     this.port = port;

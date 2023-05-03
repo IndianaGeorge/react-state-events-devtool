@@ -27,9 +27,7 @@ const StreamList = ()=>{
   const [selectedStream] = useStateEvents(Controller.getSelectedStreamEvents());
 
   useEffect(()=>{
-    const port = chrome.runtime.connect({name: 'react-state-event-devtool_connection'});
-    Controller.setPort(port);
-    Controller.requestStreamList();
+    Controller.init();
   },[Controller]);
   const select = (index)=>{
     Controller.selectState(selectedStream.type, selectedStream.index, index);

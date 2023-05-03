@@ -14,7 +14,7 @@ const validate = (obj, props) => {
     }
   }
   return true;
-}
+};
 
 chrome.runtime.onMessage.addListener(function (message, sender) {
   if (sender.tab) { // message came from a tab
@@ -26,6 +26,7 @@ chrome.runtime.onMessage.addListener(function (message, sender) {
       stateHistory[tabId][message.type] = {};
     }
     switch (message.action) {
+
       case "update":
         if (!stateHistory[tabId]) {
           stateHistory[tabId] = {};
@@ -45,7 +46,6 @@ chrome.runtime.onMessage.addListener(function (message, sender) {
           time: Date.now(),
           payload: message.payload,
         });
-        console.log(`Updated ${message.type}/${message.id} from ${tabId}`);
         // append message
         if (currentPort) { // there is a connected popup
           currentPort.postMessage({
@@ -59,11 +59,23 @@ chrome.runtime.onMessage.addListener(function (message, sender) {
           }); // to panel
         }
         break;
+
       case "new-stream":
         stateHistory[tabId][message.type][message.id] = [];
-        console.log(`Added ${message.type}/${message.id} from ${tabId}`);
         break;
+
+      case "reload":
+        stateHistory[tabId] = {};
+        historyIndex[tabId] = {};
+        if (currentPort) { // there is a connected popup
+          currentPort.postMessage({
+            action: "reload",
+          }); // to panel
+        }
+        break;
+
       default:
+        console.error(`unknown action ${message.action} requested from active content`);
         break;
     }
 }
@@ -79,15 +91,13 @@ chrome.runtime.onConnect.addListener(function (port) {
   });
   // message came from panel
   port.onMessage.addListener(function (msg) {
-    console.log('---------Got a message from popup!-----');
-    console.log(msg);
     if (!validate(msg,['action'])) {
-      alert('Action Validation failed!');
+      console.error('Got a request from panel with no action');
       return; // message failed validation
     }
     chrome.tabs.query({'active': true, 'currentWindow': true}, function (tabList) {
       if (!tabList || tabList.length < 1) {
-        alert('No current window?');
+        console.error('Query for current tab yielded no results');
         return; // no current window??
       }
       const tabId = tabList[0].id;
@@ -122,7 +132,6 @@ chrome.runtime.onConnect.addListener(function (port) {
           break;
           }
         case "update": {
-          console.log(msg);
           if (!validate(msg,['payload'])) {
             return; // message failed validation
           }
@@ -151,7 +160,6 @@ chrome.runtime.onConnect.addListener(function (port) {
             delete historyIndex[tabId][payload.streamType][payload.streamId]; // stream not in history mode anymore
           }
           stateHistory[tabId][payload.streamType][payload.streamId].push({ time: Date.now(), payload: payload.value });
-          console.log(`Updated ${payload.streamType}/${payload.streamId} at ${tabId} from tools panel`);
           port.postMessage({action: "append", payload: {streamType: payload.streamType, streamId: payload.streamId, value: payload.value, at:stateHistory[tabId][payload.streamType][payload.streamId].length-1}}); // send the update back to panel
           chrome.tabs.sendMessage(tabId, {type: payload.streamType, id: payload.streamId, payload: payload.value}); // send a new state to injected content in current tab
           break;
@@ -175,14 +183,13 @@ chrome.runtime.onConnect.addListener(function (port) {
               historyIndex[tabId][payload.streamType] = {}
             }
             historyIndex[tabId][payload.streamType][payload.streamId] = payload.index; // record new position
-            console.log(`Set ${payload.streamType}/${payload.streamId} at ${tabId} to history ${payload.index} from tools panel`);
             port.postMessage({action: "set", payload: {streamType: payload.streamType, streamId: payload.streamId, index: payload.index}}); // send the message back to panel
             chrome.tabs.sendMessage(tabId, {type: payload.streamType, id: payload.streamId, payload: stream[payload.index].payload}); // send a new state to injected content in current tab
           }
           break;
         }
         default:
-          console.error(`unknown action ${msg.action} requested`);
+          console.error(`unknown action ${msg.action} requested from panel`);
           break;
       }
     });
