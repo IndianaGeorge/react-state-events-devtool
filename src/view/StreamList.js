@@ -29,29 +29,29 @@ const StreamList = ()=>{
   return (
     <div>
       <div>
-        <ol>
+        <ul className={Styles.topSelector}>
           {
             streamTypes.map((type)=>(
-              <button onClick={()=>selectType(type)} className={`${type===selectedStream?.type?Styles.selected:Styles.notSelected}`}>
+              <button onClick={()=>selectType(type)} className={`${Styles.topItem} ${type===selectedType?Styles.selected:(type===selectedStream?.type?Styles.active:'')}`}>
                 {`${type}`}
               </button>
             ))
           }
-        </ol>
+        </ul>
       </div>
       <div>
-        <ol className={Styles.container}>
+        <ol className={Styles.eventsContainer}>
           {
             selectedStreamList.map((streamName,index)=>(
               <div
-                className={`${Styles.item} ${(selectedType===selectedStream?.type && index===selectedStream?.index)?Styles.selected:Styles.notSelected}`}
+                className={`${Styles.streamItem} ${(selectedType===selectedStream?.type && streamName===selectedStream?.index)?Styles.selected:''}`}
                 key={index}
                 onClick={()=>selectStream(streamName)}
               >
                 <div
-                  className={`${Styles.button}`}
+                  className={`${Styles.streamButton}`}
                 >
-                  {`${index}: ${streamName}`}
+                  {`${streamName}`}
                 </div>
               </div>
             ))

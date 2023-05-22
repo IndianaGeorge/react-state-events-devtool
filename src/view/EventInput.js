@@ -31,12 +31,13 @@ function EventInput() {
         rows="3"
         value={value}
         onChange={onChange}
+        placeholder="Create a new event from JSON"
       />
       <button
         className={Styles.addButton}
         onClick={onAdd}
       >
-        Add
+        Create
       </button>
     </div>
   );

@@ -1,7 +1,3 @@
-// Hideous hint for linter so chrome is recognized as a global variable
-/* global chrome */
-
-
 import React, { useContext, useEffect } from 'react';
 import { useStateEvents } from 'react-state-events';
 import { historyContext } from '../context/historyContext';
@@ -38,7 +34,7 @@ const StreamList = ()=>{
         selectedStream? stateEvents.map((stateEvent,index)=>(
           <li className={Styles.eventLine} key={index} onClick={()=>select(index)}>
             <Clock light={index>selected?'dim':'normal'}>{msToTimeString(stateEvent.time)}</Clock>
-            <PayloadBox selected={index>selected}>{JSON.stringify(stateEvent.payload,null,2)}</PayloadBox>
+            <PayloadBox light={index>selected?'dim':'normal'}>{JSON.stringify(stateEvent.payload,null,2)}</PayloadBox>
           </li>
         )) : null
       }

@@ -5,10 +5,10 @@ import { StateEvents } from 'react-state-events'
 
 export default class HistoryController {
   constructor() {
-    this.streamListEvents = new StateEvents({});
-    this.eventListEvents = new StateEvents([]);
-    this.selectedStateEvents = new StateEvents({});
-    this.selectedStreamEvents = new StateEvents(null);
+    this.streamListEvents = new StateEvents({},"stream list");
+    this.eventListEvents = new StateEvents([], "event list");
+    this.selectedStateEvents = new StateEvents({}, "selected state");
+    this.selectedStreamEvents = new StateEvents(null, "selected stream");
     this.port = null;
   }
 

@@ -1,4 +1,5 @@
-.container {
+/* events list */
+.eventsContainer {
     margin: 0;
     padding: 0;
     list-style: none;
@@ -13,7 +14,7 @@
     user-select: none;
 }
 
-.item {
+.streamItem {
     background-color: #888;
     padding: 0.4rem;
     cursor: pointer;
@@ -25,7 +26,7 @@
         inset hsla(0,0%,100%, 1) 0.5em 0.5em 1em 0.3em; /* Top Left highlight */
 }
 
-.button {
+.streamButton {
     padding: 0.3rem 0.5rem;
     text-align: center;
     font-weight: bold;
@@ -49,7 +50,7 @@
 
 }
 
-.selected .button {
+.streamItem.selected > .streamButton {
     color: hsl(210,100%,90%);
     text-shadow:
     hsla(0,0%,40%,.2) 0 1px 0,
@@ -58,7 +59,7 @@
     hsla(210,100%,40%,1) 0 0 0.8em;
 }
 
-.selected {
+.streamItem.selected {
     box-shadow:
     inset hsla(200,100%,80%,.6) 0 0 0.2em 0.05em, /* Lit border */
     inset hsla(210,100%,40%,.7) 0 0 0.5em 0.2em, /* Border bloom */
@@ -66,5 +67,45 @@
     inset hsla(0,0%,100%, 1) 0.5em 0.5em 1em 0.3em; /* Top Left highlight */
 }
 
-.notSelected {
+/* stream list */
+.topSelector {
+    list-style-type: none;
+    margin: 0;
+    padding: 1rem 0;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
+
+.topItem {
+    background-color: brown;
+    color: rgba(255, 255, 255, 0.6);
+    font-weight: 700;
+    font-size: 1.5rem;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    padding: 0 0.75em;
+    border: 0;
+    border-radius: 0;
+    text-transform: none;
+    transform:rotate(2.5deg);
+    cursor: pointer;
+    text-shadow: 0px -0.05em 0.04em brown, 0 0 0 #000, 0px -0.05em 0.04em brown;
+}
+
+.topItem:nth-child(2n) { transform:rotate(-2deg); }
+.topItem:nth-child(3n) { transform:rotate(1deg); }
+.topItem:nth-child(4n) { transform:rotate(-2.5deg); }
+.topItem:nth-child(5n) { transform:rotate(-3deg); }
+.topItem:nth-child(6n) { transform:rotate(3deg); }
+
+.topItem.active {
+    text-decoration-line: underline;
+    text-decoration-style: dashed;
+    text-decoration-thickness: 0.1em;
+}
+
+.topItem.selected, .topItem:hover {
+    text-decoration-line: underline;
+    text-decoration-style: solid;
+    text-decoration-thickness: 0.1em;
 }

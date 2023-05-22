@@ -3,7 +3,7 @@ import React from 'react';
 import Styles from './PayloadBox.module.css';
 
 const PayloadBox = (props)=>(
-  <span className={`${Styles.box} ${props.selected?Styles.selected:Styles.unselected}`}>
+  <span className={`${Styles.box} ${Styles[props.light]}`}>
     {props.children}
   </span>
 )
