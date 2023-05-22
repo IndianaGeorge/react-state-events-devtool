@@ -260,4 +260,4 @@ In the project directory, you can run:
 
 ### `npm run build`
 
-Builds the browser extension for production to the `build` folder.\
+Builds the browser extension for production to the `build` folder.
