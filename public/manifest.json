@@ -5,6 +5,14 @@
   "version": "0.1.0",
   "devtools_page": "devtools.html",
   "content_security_policy": "script-src 'self' 'sha256-oUd9FmFP9+t0dULXa97X+wUfPDH1UsQUuZAMj25j0cc='; object-src 'self'",
+  "icons": {
+    "16": "icon16.png",
+    "32": "icon32.png",
+    "48": "icon48.png",
+    "96": "icon96.png",
+    "128": "icon128.png",
+    "256": "icon256.png"
+  },
   "content_scripts": [
     {
       "matches": [
@@ -15,19 +23,6 @@
   ],
   "background": {
     "scripts": ["background.js"]
-  },
-  "browser_action": {
-    "default_popup": "popup.html",
-    "default_icon": "tempicon.png"
-  },
-  "commands": {
-    "_execute_browser_action": {
-      "suggested_key": {
-        "default": "Ctrl+Shift+E",
-        "mac": "MacCtrl+Shift+E"
-      },
-      "description": "not sure"
-    }
   },
   "permissions": [
     "activeTab"

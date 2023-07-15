@@ -9,6 +9,7 @@ function EventInput() {
   const Controller = useContext(historyContext);
   const [selectedStream] = useStateEvents(Controller.getSelectedStreamEvents());
   const [value, setValue] = useState("");
+  const [invalid, setInvalid] = useState(false);
 
   const onAdd = () => {
     try {
@@ -17,20 +18,22 @@ function EventInput() {
     }
     catch {
       console.error("Tried to set invalid JSON or stream");
+      setInvalid(true);
     }
   };
 
-  const onChange = (data) => {
+  const onInput = (data) => {
     setValue(data.target.value);
+    setInvalid(false);
   };
 
   return (
     <div className={Styles.main}>
       <textarea
-        className={Styles.textarea}
+        className={`${Styles.textarea} ${invalid && Styles.invalidInput}`}
         rows="3"
         value={value}
-        onChange={onChange}
+        onInput={onInput}
         placeholder="Create a new event from JSON"
       />
       <button
