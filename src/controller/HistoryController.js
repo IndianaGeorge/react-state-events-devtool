@@ -5,7 +5,7 @@ import { StateEvents } from 'react-state-events'
 
 export default class HistoryController {
   constructor() {
-    this.streamListEvents = new StateEvents({},"stream list");
+    this.streamListEvents = new StateEvents({allStreamsList: {}, allStreamsNames: {}},"stream list");
     this.eventListEvents = new StateEvents([], "event list");
     this.selectedStateEvents = new StateEvents({}, "selected state");
     this.selectedStreamEvents = new StateEvents(null, "selected stream");
@@ -33,7 +33,7 @@ export default class HistoryController {
   }
 
   selectStream(streamType, streamId) {
-    if (this.streamListEvents.current?.[streamType]?.includes?.(streamId)) {
+    if (this.streamListEvents.current.allStreamsList[streamType]?.includes?.(streamId)) {
       this.selectedStreamEvents.publish({type: streamType, index: streamId});
       this.requestStreamHistory(streamType, streamId);
     }

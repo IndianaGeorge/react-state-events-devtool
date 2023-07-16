@@ -6,7 +6,8 @@ import Styles from './StreamList.module.css';
 
 const StreamList = ()=>{
   const Controller = useContext(historyContext);
-  const [allStreamsList] = useStateEvents(Controller.getStreamListEvents());
+  const [StreamsAndNames] = useStateEvents(Controller.getStreamListEvents());
+  const { allStreamsList, allStreamsNames } = StreamsAndNames;
   const [selectedStream] = useStateEvents(Controller.getSelectedStreamEvents());
   const [selectedType, setSelectedType] = useState(null);
   const streamTypes = Object.keys(allStreamsList);
@@ -42,16 +43,16 @@ const StreamList = ()=>{
       <div>
         <ol className={Styles.eventsContainer}>
           {
-            selectedStreamList.map((streamName,index)=>(
+            selectedStreamList.map((streamId,index)=>(
               <div
-                className={`${Styles.streamItem} ${(selectedType===selectedStream?.type && streamName===selectedStream?.index)?Styles.selected:''}`}
+                className={`${Styles.streamItem} ${(selectedType===selectedStream?.type && streamId===selectedStream?.index)?Styles.selected:''}`}
                 key={index}
-                onClick={()=>selectStream(streamName)}
+                onClick={()=>selectStream(streamId)}
               >
                 <div
                   className={`${Styles.streamButton}`}
                 >
-                  {`${streamName}`}
+                  {`${allStreamsNames[selectedType]?.[streamId] || streamId}`}
                 </div>
               </div>
             ))

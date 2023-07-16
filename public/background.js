@@ -1,6 +1,7 @@
 /*global chrome*/
 const stateHistory = {}; // history content
 const historyIndex = {}; // current history entry if not the last
+const names = {}; // maps stream ids to stream names
 let currentPort = null; // connected popup for append messages
 
 // checks that obj has the listed props
@@ -62,6 +63,13 @@ chrome.runtime.onMessage.addListener(function (message, sender) {
 
       case "new-stream":
         stateHistory[tabId][message.type][message.id] = [];
+        if (!names.hasOwnProperty(tabId)) {
+          names[tabId] = {};
+        }
+        if (!names[tabId].hasOwnProperty(message.type)) {
+          names[tabId][message.type] = {};
+        }
+        names[tabId][message.type][message.id] = message.payload;
         break;
 
       case "reload":
@@ -106,11 +114,11 @@ chrome.runtime.onConnect.addListener(function (port) {
           const tabHistoryExists = stateHistory.hasOwnProperty(tabId);
           const tabHistory = tabHistoryExists ? stateHistory[tabId] : {};
           const streamTypeList = Object.keys(tabHistory);
-          const streamTypes = {};
+          const allStreamsList = {};
           for(const streamType of streamTypeList) {
-            streamTypes[streamType] = Object.keys(tabHistory[streamType]);
+            allStreamsList[streamType] = Object.keys(tabHistory[streamType]);
           }
-          port.postMessage({action: "list", payload: streamTypes}); // to panel
+          port.postMessage({action: "list", payload: { allStreamsList, allStreamsNames: names[tabId] }}); // to panel
           break;
           }
         case "get":{
