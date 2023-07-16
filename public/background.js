@@ -1,7 +1,7 @@
 /*global chrome*/
-const stateHistory = {}; // history content
-const historyIndex = {}; // current history entry if not the last
-const names = {}; // maps stream ids to stream names
+const stateHistory = {}; // history content: stateHistory[tabId][payload.streamType][payload.streamId].push({ time: Date.now(), payload: payload.value });
+const historyIndex = {}; // current history entry if not the last: historyIndex[tabId][payload.streamType][payload.streamId] = payload.index;
+const names = {}; // maps stream ids to stream names: names[tabId][message.type][message.id] = message.id;
 let currentPort = null; // connected popup for append messages
 
 // checks that obj has the listed props
@@ -35,13 +35,29 @@ chrome.runtime.onMessage.addListener(function (message, sender) {
         if (!stateHistory[tabId][message.type]) {
           stateHistory[tabId][message.type] = {};
         }
+        if (!names.hasOwnProperty(tabId)) {
+          names[tabId] = {};
+        }
+        if (!names[tabId].hasOwnProperty(message.type)) {
+          names[tabId][message.type] = {};
+        }
+        if (!names[tabId][message.type].hasOwnProperty(message.id)) {
+          names[tabId][message.type][message.id] = message.id;
+        }
         if (!stateHistory[tabId][message.type].hasOwnProperty(message.id)) {
           stateHistory[tabId][message.type][message.id] = [];
         }
+        const payload = {
+          streamType: message.type,
+          streamId: message.id,
+          value: message.payload
+        };
         if (historyIndex?.[tabId]?.[message.type]?.hasOwnProperty(message.id)) {
+          // in history mode
           const spliceFrom = historyIndex[tabId][message.type][message.id]+1;
           stateHistory[tabId][message.type][message.id].splice(spliceFrom); // remove history from insertion point forwards
           delete historyIndex[tabId][message.type][message.id]; // stream not in history mode anymore
+          payload.at = stateHistory[tabId][message.type][message.id].length-1;
         }
         stateHistory[tabId][message.type][message.id].push({
           time: Date.now(),
@@ -51,18 +67,21 @@ chrome.runtime.onMessage.addListener(function (message, sender) {
         if (currentPort) { // there is a connected popup
           currentPort.postMessage({
             action: "append",
-            payload: {
-              streamType: message.type,
-              streamId: message.id,
-              value: message.payload,
-              at: stateHistory[tabId][message.type][message.id].length-1
-            }
+            payload
           }); // to panel
         }
         break;
 
       case "new-stream":
-        stateHistory[tabId][message.type][message.id] = [];
+        if (!stateHistory.hasOwnProperty(tabId)) {
+          stateHistory[tabId] = {};
+        }
+        if (!stateHistory[tabId].hasOwnProperty(message.type)) {
+          stateHistory[tabId][message.type] = {};
+        }
+        if (!stateHistory[tabId][message.type].hasOwnProperty(message.id)) {
+          stateHistory[tabId][message.type][message.id] = [];
+        }
         if (!names.hasOwnProperty(tabId)) {
           names[tabId] = {};
         }
@@ -75,6 +94,7 @@ chrome.runtime.onMessage.addListener(function (message, sender) {
       case "reload":
         stateHistory[tabId] = {};
         historyIndex[tabId] = {};
+        names[tabId] = {};
         if (currentPort) { // there is a connected popup
           currentPort.postMessage({
             action: "reload",
@@ -202,13 +222,4 @@ chrome.runtime.onConnect.addListener(function (port) {
       }
     });
   });
-
-  // message came from a tab
-
 });
-
-
-// chrome.tabs.sendMessage(activeTab.id, {"message": "clicked_browser_action"});
-// - send me the full history for this stream in the current tab
-// - set this stream to this new state in the current tab
-// - set this stream to an old state in the current tab

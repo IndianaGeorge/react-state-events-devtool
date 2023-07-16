@@ -154,6 +154,7 @@ These are the different message formats sent from the the background to the DevT
 ```
 
 ### Update from content containing single event
+property `at` is optional
 ```json
 {
     "action": "append",

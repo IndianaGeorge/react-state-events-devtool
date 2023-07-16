@@ -83,10 +83,11 @@ export default class HistoryController {
         }
         break;
       case "append":
-        if (msg.payload && this.selectedStreamEvents.current) {
-          const cstream = this.selectedStreamEvents.current;
+        if (msg.payload) {
           const payload = msg.payload;
-          if ((cstream.type === payload.streamType) && (cstream.index === payload.streamId)) {
+          const cstream = this.selectedStreamEvents.current;
+          if (cstream && (cstream.type === payload.streamType) && (cstream.index === payload.streamId)) {
+            // appending to currently viewed stream
             const events = [...this.eventListEvents.current];
             if (payload.hasOwnProperty('at')) {
               events.splice(payload.at);
@@ -95,10 +96,35 @@ export default class HistoryController {
             this.eventListEvents.publish(events);
             this.selectedStateEvents.publish(events.length-1);
           }
+          else {
+            // appending to a stream not in view
+            const streamlist = this.streamListEvents.current;
+            if (!streamlist.allStreamsList[payload.streamType]?.includes?.(payload.streamId)) {
+              // we don't have this stream, add it
+              // allStreamsList[payload.streamType] = [...streamIds]
+              // allStreamsNames[message.type][message.id] = message.id
+              const allStreamsList = { ...streamlist.allStreamsList };
+              if (!allStreamsList[payload.streamType]) {
+                allStreamsList[payload.streamType] = [];
+              }
+              allStreamsList[payload.streamType] = [...allStreamsList[payload.streamType], payload.streamId];
+              const allStreamsNames = { ...streamlist.allStreamsNames };
+              if (!allStreamsNames[payload.streamType]) {
+                allStreamsNames[payload.streamType] = {};
+              }
+              if (!allStreamsNames[payload.streamType][payload.streamId]) {
+                allStreamsNames[payload.streamType][payload.streamId] = payload.streamId; // unknown name, default to id
+              }
+              this.streamListEvents.publish({
+                allStreamsList,
+                allStreamsNames
+              });
+            }
+          }
         }
         break;
       case 'reload':
-        this.streamListEvents.publish({});
+        this.streamListEvents.publish({allStreamsList: {}, allStreamsNames: {}});
         this.eventListEvents.publish([]);
         this.selectedStateEvents.publish({});
         this.selectedStreamEvents.publish(null);
