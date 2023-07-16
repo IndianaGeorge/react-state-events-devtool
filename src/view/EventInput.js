@@ -5,11 +5,19 @@ import { useStateEvents } from 'react-state-events';
 
 import Styles from './EventInput.module.css';
 
-function EventInput() {
+const { forwardRef, useImperativeHandle } = React;
+
+const EventInput = forwardRef((props, ref) =>{
   const Controller = useContext(historyContext);
   const [selectedStream] = useStateEvents(Controller.getSelectedStreamEvents());
   const [value, setValue] = useState("");
   const [invalid, setInvalid] = useState(false);
+
+  useImperativeHandle(ref, () => ({
+    paste(value) {
+      setValue(value);
+    }
+  }));
 
   const onAdd = () => {
     try {
@@ -44,6 +52,6 @@ function EventInput() {
       </button>
     </div>
   );
-}
+});
 
 export default EventInput;

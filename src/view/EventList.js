@@ -16,7 +16,7 @@ const pad = (number,digits)=>{
   return text.padStart(digits, '0');
 }
 
-const StreamList = ()=>{
+const StreamList = ({ pasteCb })=>{
   const Controller = useContext(historyContext);
   const [stateEvents] = useStateEvents(Controller.getEventListEvents());
   const [selected] = useStateEvents(Controller.getSelectedStateEvents());
@@ -25,18 +25,22 @@ const StreamList = ()=>{
   useEffect(()=>{
     Controller.init();
   },[Controller]);
-  const select = (index)=>{
+  const select = (index, content)=>{
     Controller.selectState(selectedStream.type, selectedStream.index, index);
+    pasteCb(content);
   }
   return (
     <ol className={Styles.eventList}>
       {
-        selectedStream? stateEvents.map((stateEvent,index)=>(
-          <li className={Styles.eventLine} key={index} onClick={()=>select(index)}>
-            <Clock light={index>selected?'dim':'normal'}>{msToTimeString(stateEvent.time)}</Clock>
-            <PayloadBox light={index>selected?'dim':'normal'}>{JSON.stringify(stateEvent.payload,null,2)}</PayloadBox>
-          </li>
-        )) : null
+        selectedStream? stateEvents.map((stateEvent,index)=>{
+          const content = JSON.stringify(stateEvent.payload,null,2);
+          return (
+            <li className={Styles.eventLine} key={index} onClick={()=>select(index, content)}>
+              <Clock light={index>selected?'dim':'normal'}>{msToTimeString(stateEvent.time)}</Clock>
+              <PayloadBox light={index>selected?'dim':'normal'}>{content}</PayloadBox>
+            </li>
+          );
+        }) : null
       }
     </ol>
   )
