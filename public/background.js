@@ -57,7 +57,7 @@ chrome.runtime.onMessage.addListener(function (message, sender) {
           const spliceFrom = historyIndex[tabId][message.type][message.id]+1;
           stateHistory[tabId][message.type][message.id].splice(spliceFrom); // remove history from insertion point forwards
           delete historyIndex[tabId][message.type][message.id]; // stream not in history mode anymore
-          payload.at = stateHistory[tabId][message.type][message.id].length-1;
+          payload.at = stateHistory[tabId][message.type][message.id].length;
         }
         stateHistory[tabId][message.type][message.id].push({
           time: Date.now(),
