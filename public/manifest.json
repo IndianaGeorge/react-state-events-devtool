@@ -7,11 +7,8 @@
   "content_security_policy": "script-src 'self' 'sha256-oUd9FmFP9+t0dULXa97X+wUfPDH1UsQUuZAMj25j0cc='; object-src 'self'",
   "icons": {
     "16": "icon16.png",
-    "32": "icon32.png",
     "48": "icon48.png",
-    "96": "icon96.png",
-    "128": "icon128.png",
-    "256": "icon256.png"
+    "128": "icon128.png"
   },
   "content_scripts": [
     {
