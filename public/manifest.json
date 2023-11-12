@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "react-state-event devtool",
   "short_name": "RSE DevTool",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "devtools_page": "devtools.html",
   "content_security_policy": {
     "script-src": "self",
