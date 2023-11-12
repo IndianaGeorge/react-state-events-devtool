@@ -172,7 +172,6 @@ chrome.tabs.onRemoved.addListener(function (tabId) {
 });
 
 chrome.tabs.onReplaced.addListener(function (addedTabId, removedTabId) {
-  console.log("Replacing tab",removedTabId);
   const oldHistoryIndicesKey = `historyIndices.${removedTabId}`;
   const oldNamesKey = `names.${removedTabId}`;
   const newHistoryIndicesKey = `historyIndices.${addedTabId}`;
