@@ -23,7 +23,7 @@ const StreamList = ({ pasteCb })=>{
   const [selectedStream] = useStateEvents(Controller.getSelectedStreamEvents());
 
   useEffect(()=>{
-    Controller.init();
+    Controller.connect();
   },[Controller]);
   const select = (index, content)=>{
     Controller.selectState(selectedStream.type, selectedStream.index, index);

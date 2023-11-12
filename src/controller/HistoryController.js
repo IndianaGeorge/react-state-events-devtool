@@ -66,6 +66,10 @@ export default class HistoryController {
     }
   }
 
+  onDisconnect () {
+    this.connect();
+  }
+
   onBgMsg (msg) {
     switch (msg.action) {
       case "list":
@@ -128,9 +132,9 @@ export default class HistoryController {
         this.eventListEvents.publish([]);
         this.selectedStateEvents.publish({});
         this.selectedStreamEvents.publish(null);
-        const boundInit = this.init.bind(this);
+        const boundConnect = this.connect.bind(this);
         setTimeout(function () {
-          boundInit();
+          boundConnect();
         }, 1000);
         break;
       default:
@@ -138,8 +142,10 @@ export default class HistoryController {
     }
   }
 
-  init() {
+  connect() {
     const port = chrome.runtime.connect({name: 'react-state-event-devtool_connection'});
+    const boundConnect = this.connect.bind(this);
+    port.onDisconnect.addListener(boundConnect);
     this.setPort(port);
     this.requestStreamList();
   }
