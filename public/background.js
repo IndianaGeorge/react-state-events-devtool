@@ -237,7 +237,7 @@ chrome.runtime.onMessage.addListener(async function (message, sender) {
           time: Date.now(),
           payload: message.payload,
         });
-        const allStatesHistory = safeRead(root, [tabId,'stateHistory'], []);
+        const allStatesHistory = safeRead(root, [tabId,'stateHistory'], {});
         safeAssign(allStatesHistory, [message.type, message.id], updatedStateHistory);
         const newTabData = {
           stateHistory: allStatesHistory,
@@ -261,8 +261,15 @@ chrome.runtime.onMessage.addListener(async function (message, sender) {
       case "new-stream": {
         const names = safeRead(root, [tabId, 'names'], {});
         const newNames = safeAssign(names, [message.type,message.id], message.payload);
+        const stateHistory = safeRead(root, [tabId,'stateHistory', message.type, message.id], []);
+        const allStatesHistory = safeRead(root, [tabId,'stateHistory'], {});
+        if ( (typeof message.init !== "undefined") && (stateHistory.length === 0) ) {
+          safeAssign(allStatesHistory, [message.type, message.id], [{time: Date.now(), payload: message.init}]);
+        }
+
         const newTabData = {
           ...root[tabId],
+          stateHistory: allStatesHistory,
           names: newNames,
         }
         root[tabId] = newTabData;
@@ -358,7 +365,7 @@ chrome.runtime.onConnect.addListener(function (port) {
           });
           port.postMessage({action: "append", payload: {streamType: payload.streamType, streamId: payload.streamId, value: payload.value, ...(payload.at && {at: payload.at}) }}); // send the update back to panel
           chrome.tabs.sendMessage(tabId, {type: payload.streamType, id: payload.streamId, payload: payload.value}); // send a new state to injected content in current tab
-          const allStatesHistory = safeRead(root, [tabId,'stateHistory'], []);
+          const allStatesHistory = safeRead(root, [tabId,'stateHistory'], {});
           safeAssign(allStatesHistory, [payload.streamType, payload.streamId], updatedStream);
           const newTabData = {
             ...root[tabId],

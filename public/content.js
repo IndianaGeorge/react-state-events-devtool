@@ -15,7 +15,7 @@ window.addEventListener("message", function (event) {
           if (!event.data.id || !event.data.payload) {
             return;
           }
-          data = {action:"new-stream", type:"StateEvents", id:event.data.id, payload:event.data.payload};
+          data = {action:"new-stream", type:"StateEvents", id:event.data.id, payload:event.data.payload, init: event.data.init};
           break;
         case "react-state-event-devTool-notify":
           if (!event.data.payload) {
@@ -30,7 +30,7 @@ window.addEventListener("message", function (event) {
           if (!event.data.name) {
             return;
           }
-          data = {action:"new-stream", type:"ExternalStateEvents", id:event.data.name, payload:event.data.name};
+          data = {action:"new-stream", type:"ExternalStateEvents", id:event.data.name, payload:event.data.name, init: event.data.init};
           break;
         default:
           return;
