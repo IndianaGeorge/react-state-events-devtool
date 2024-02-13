@@ -84,6 +84,7 @@ These are the different message formats sent from the DevTools panel to the back
 ### Set stream to JSON in input field (UPDATE)
 ```json
 {
+    "tabId": "currentTabId",
     "action": "update",
     "payload": {
         "streamType": "streamType",
@@ -96,6 +97,7 @@ These are the different message formats sent from the DevTools panel to the back
 ### Set stream to state from history (SET)
 ```json
 {
+    "tabId": "currentTabId",
     "action": "set",
     "payload": {
         "streamType": "streamType",
@@ -108,6 +110,7 @@ These are the different message formats sent from the DevTools panel to the back
 ### Request full history of stream (GET)
 ```json
 {
+    "tabId": "currentTabId",
     "action": "get",
     "payload": {
         "streamType": "streamType",
@@ -119,6 +122,7 @@ These are the different message formats sent from the DevTools panel to the back
 ### Request current list of streams (LIST)
 ```json
 {
+    "tabId": "currentTabId",
     "action": "list"
 }
 ```

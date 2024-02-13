@@ -43,6 +43,7 @@ export default class HistoryController {
     this.selectedStateEvents.publish(index);
     if (this.port) {
       this.port.postMessage({
+        tabId: chrome.devtools.inspectedWindow.tabId,
         action: "set",
         payload: {
           streamType: streamType,
@@ -56,6 +57,7 @@ export default class HistoryController {
   sendEvent(streamType, streamId, newEventPayload) {
     if (this.port) {
       this.port.postMessage({
+        tabId: chrome.devtools.inspectedWindow.tabId,
         action: "update",
         payload: {
           streamType: streamType,
@@ -164,6 +166,7 @@ export default class HistoryController {
   requestStreamHistory(streamType, streamId) {
     if (this.port) {
       this.port.postMessage({
+        tabId: chrome.devtools.inspectedWindow.tabId,
         action: "get",
         payload: {
           streamType: streamType,
@@ -175,7 +178,10 @@ export default class HistoryController {
 
   requestStreamList() {
     if (this.port) {
-      this.port.postMessage({action: "list"});
+      this.port.postMessage({
+        tabId: chrome.devtools.inspectedWindow.tabId,
+        action: "list",
+      });
     }
   }
 
