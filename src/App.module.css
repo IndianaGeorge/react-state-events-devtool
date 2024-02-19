@@ -6,8 +6,11 @@
 }
 
 .eventList {
-    flex-grow: 1;
+    resize: vertical;
+    flex-grow: 0;
     flex-shrink: 1;
+    height: 100%;
     overflow-x: hidden;
     overflow-y: auto;
+    border-bottom: 1px solid black;
 }
