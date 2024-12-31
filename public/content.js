@@ -15,7 +15,11 @@ window.addEventListener("message", function (event) {
           if (!event.data.id || !event.data.payload) {
             return;
           }
-          data = {action:"new-stream", type:"StateEvents", id:event.data.id, payload:event.data.payload, init: event.data.init};
+          if (typeof event.data.payload === 'string') {
+            data = {action:"new-stream", type:"StateEvents", id:event.data.id, payload:event.data.payload, init: event.data.init};
+          } else {
+            data = {action:"new-stream", type:event.data.payload.streamType, id:event.data.id, payload:event.data.payload.debugName, init: event.data.init};
+          }
           break;
         case "react-state-event-devTool-notify":
           if (!event.data.payload) {
