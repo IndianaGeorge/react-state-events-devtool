@@ -176,13 +176,23 @@ property `at` is optional
 These are the different message formats sent in reaction to an `event` received via a `message` window event in the content injected in the tab. The reaction messages are sent to the background via `chrome.runtime.sendMessage`.
 The `event` is required to have `event.source` equal to the same window as the content and `event.origin` equal to the same origin as the content, so it should only come from the same tab where the content was injected.
 
-## When `event.data.type` is `'react-state-event-devTool-streamId'`
+## When `event.data.type` is `'react-state-event-devTool-streamId'` and `event.data.payload` is a string (old format)
 ```json
 {
     "action": "new-stream",
     "type": "StateEvents",
     "id": "event.data.id",
     "payload": "event.data.payload"
+}
+```
+
+## When `event.data.type` is `'react-state-event-devTool-streamId'` and `event.data.payload` is NOT a string (new format)
+```json
+{
+    "action": "new-stream",
+    "type": "event.data.payload.streamType",
+    "id": "event.data.id",
+    "payload": "event.data.payload.debugName"
 }
 ```
 
