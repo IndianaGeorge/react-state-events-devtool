@@ -16,7 +16,7 @@ window.addEventListener("message", function (event) {
             return;
           }
           if (typeof event.data.payload === 'string') {
-            data = {action:"new-stream", type:"StateEvents", id:event.data.id, payload:event.data.payload, init: event.data.init};
+            data = {action:"new-stream", type:"StateEvents", id:event.data.id, payload:event.data.payload, init: event.data.init}; // legacy
           } else {
             data = {action:"new-stream", type:event.data.payload.streamType, id:event.data.id, payload:event.data.payload.debugName, init: event.data.init};
           }
@@ -47,13 +47,11 @@ window.addEventListener("message", function (event) {
 function handleAppMessage(msg, sender, respFn) {
   if (msg.origin !== 'react-state-event-devTool') {
     switch (msg.type) {
-      case "StateEvents":
-        window.postMessage({type: "react-state-event-devTool-set", id: msg.id, payload: msg.payload}, window.origin);
-        break;
-      case "ExternalStateEvents":
+      case "ExternalStateEvents": // legacy
         window.postMessage({type: "react-state-event", name: msg.id, success: true, payload: msg.payload}, window.origin);
         break;
       default:
+        window.postMessage({type: "react-state-event-devTool-set", id: msg.id, payload: msg.payload, streamType: msg.type}, window.origin);
         return;
     }
     window.postMessage(msg, "*");
